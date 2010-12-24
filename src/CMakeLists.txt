@@ -1,6 +1,8 @@
 #################################################################################
-### $Id: CMakeLists.txt 6461 2010-05-31 11:46:20Z FloSoft $
+### $Id: CMakeLists.txt 6942 2010-12-24 07:50:41Z FloSoft $
 #################################################################################
+
+INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libsiedler2/src")
 
 ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp main.cpp tempname.cpp)
 
