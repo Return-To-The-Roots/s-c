@@ -115,6 +115,9 @@
     <ClInclude Include="..\..\src\tokenizer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\libendian\win32\vs2010\libendian.vcxproj">
+      <Project>{1c4d182c-4502-4a05-b1f3-9dd5214c3dee}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\libsiedler2\win32\vs2010\libsiedler2.vcxproj">
       <Project>{290e94f7-c0be-4950-87aa-d269467a82bf}</Project>
     </ProjectReference>
