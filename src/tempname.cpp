@@ -1,6 +1,6 @@
-// $Id: tempname.cpp 6582 2010-07-16 11:23:35Z FloSoft $
+// $Id: tempname.cpp 7521 2011-09-08 20:45:55Z FloSoft $
 //
-// Copyright (c) 2005 - 2010 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -66,7 +66,7 @@ bool tempname(char *name, unsigned int length)
 #ifdef _WIN32
 	static char ptemp[MAX_PATH];
 	tempdir = ptemp;
-	if(GetTempPath(MAX_PATH, ptemp) == 0)
+	if(GetTempPathA(MAX_PATH, ptemp) == 0)
 		tempdir = NULL;
 #endif
 

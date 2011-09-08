@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B1D788CC-2348-4A61-B275-DBBC37A4D7D1}</ProjectGuid>
+    <ProjectGuid>{2C131B16-6FA4-4940-AE47-61F885320F4E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>soundconvert</RootNamespace>
+    <RootNamespace>sc_resample</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -50,12 +50,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996;4250;</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4250;4244;4013;4273;4047;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(OutDir)\libsiedler2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -67,26 +66,37 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996;4250;</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4250;4244;4013;4273;4047;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)\libsiedler2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\getopt.cpp" />
-    <ClCompile Include="..\..\src\getopt_long.cpp" />
-    <ClCompile Include="..\..\src\main.cpp" />
-    <ClCompile Include="..\..\src\tempname.cpp" />
+    <ClInclude Include="..\..\sndlib-20\mus-config.h" />
+    <ClInclude Include="..\..\sndlib-20\sndlib-strings.h" />
+    <ClInclude Include="..\..\sndlib-20\sndlib.h" />
+    <ClInclude Include="..\..\sndlib-20\_sndlib.h" />
+    <ClInclude Include="..\..\src\endian.h" />
+    <ClInclude Include="..\..\src\filterkit.h" />
+    <ClInclude Include="..\..\src\largefilter.h" />
+    <ClInclude Include="..\..\src\resample.h" />
+    <ClInclude Include="..\..\src\smallfilter.h" />
+    <ClInclude Include="..\..\src\sndlibextra.h" />
+    <ClInclude Include="..\..\src\stdefs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\getopt.h" />
-    <ClInclude Include="..\..\src\tempname.h" />
-    <ClInclude Include="..\..\src\tokenizer.hpp" />
+    <ClCompile Include="..\..\sndlib-20\audio.c" />
+    <ClCompile Include="..\..\sndlib-20\headers.c" />
+    <ClCompile Include="..\..\sndlib-20\io.c" />
+    <ClCompile Include="..\..\sndlib-20\sound.c" />
+    <ClCompile Include="..\..\src\filterkit.c" />
+    <ClCompile Include="..\..\src\resample.c" />
+    <ClCompile Include="..\..\src\resamplesubs.c" />
+    <ClCompile Include="..\..\src\sndlibextra.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

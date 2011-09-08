@@ -1,6 +1,6 @@
-// $Id: main.cpp 7206 2011-05-05 16:24:48Z FloSoft $
+// $Id: main.cpp 7521 2011-09-08 20:45:55Z FloSoft $
 //
-// Copyright (c) 2005 - 2010 Settlers Freaks (sf-team at siedler25.org)
+// Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
 // This file is part of Return To The Roots.
 //
@@ -28,7 +28,7 @@
 
 #ifdef _WIN32
 #	include <windows.h>
-#	define unlink DeleteFile
+#	define unlink DeleteFileA
 #	ifdef _MSC_VER
 #		define snprintf _snprintf
 #	endif
