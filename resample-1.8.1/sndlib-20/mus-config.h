@@ -18,7 +18,27 @@
 #define HAVE_STRDUP 1
 #define HAVE_FILENO 1
 #define HAVE_COMPLEX_TRIG 1
-/* #undef WORDS_BIGENDIAN */
+
+#if defined _WIN32 || defined __CYGWIN__
+#       undef LITTLE_ENDIAN
+#       undef BIG_ENDIAN
+#       undef BYTE_ORDER
+#       define LITTLE_ENDIAN 1234
+#       define BIG_ENDIAN    4321
+#       define BYTE_ORDER    LITTLE_ENDIAN
+#else
+#       include <sys/param.h>
+#endif // !_WIN32 && !__CYGWIN__
+
+#if BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN
+#       error "Sorry your Byteorder is not supported by this Library"
+#endif // BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN
+
+#if BYTE_ORDER == LITTLE_ENDIAN
+#	undef WORDS_BIGENDIAN
+#else
+#	define WORDS_BIGENDIAN 1
+#endif // BYTE_ORDER != LITTLE_ENDIAN
 
 #define HAVE_FCNTL_H 1
 #define HAVE_LIMITS_H 1

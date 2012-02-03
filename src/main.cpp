@@ -1,4 +1,4 @@
-// $Id: main.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: main.cpp 7811 2012-02-03 07:20:40Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -39,6 +39,7 @@
 #include "tokenizer.hpp"
 
 #include "../../libsiedler2/src/libsiedler2.h"
+#include "../../libendian/src/endianess.h"
 
 int usage(int argc, char *argv[])
 {
@@ -186,6 +187,10 @@ int main(int argc, char *argv[])
 		unsigned char *data = new unsigned char[wave->getLength()];
 		memcpy(data, wave->getData(), wave->getLength());
 		unsigned short bitrate = 8;
+#if BYTE_ORDER == BIG_ENDIAN
+		frequency = libendian::swap_i(frequency);
+		bitrate = libendian::swap_us(bitrate);
+#endif
 		memcpy(&data[24], &frequency, 4);
 		memcpy(&data[28], &frequency, 4);
 		memcpy(&data[34], &bitrate, 2);
