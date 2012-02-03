@@ -1,4 +1,4 @@
-// $Id: main.cpp 7811 2012-02-03 07:20:40Z FloSoft $
+// $Id: main.cpp 7813 2012-02-03 17:17:59Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -39,6 +39,7 @@
 #include "tokenizer.hpp"
 
 #include "../../libsiedler2/src/libsiedler2.h"
+#include "../../libendian/src/libendian.h"
 #include "../../libendian/src/endianess.h"
 
 int usage(int argc, char *argv[])
