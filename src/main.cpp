@@ -1,4 +1,4 @@
-// $Id: main.cpp 7813 2012-02-03 17:17:59Z FloSoft $
+// $Id: main.cpp 7839 2012-02-14 13:14:53Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -84,10 +84,10 @@ int main(int argc, char *argv[])
 	if(!scs || !to || !from)
 		return usage(argc, argv);
 
-	printf("Starting samplerate conversion");
+	printf("Starting samplerate conversion\n\n");
 	printf("Input file: \"%s\"\n", from);
 	printf("Output file: \"%s\"\n", to);
-	printf("using Script: \"%s\"\n", scs);
+	printf("using Script: \"%s\"\n\n", scs);
 
 	libsiedler2::ArchivInfo input, output;
 	if(libsiedler2::Load(from, &input) != 0)
