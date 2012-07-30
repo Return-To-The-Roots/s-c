@@ -1,4 +1,4 @@
-// $Id: main.cpp 7839 2012-02-14 13:14:53Z FloSoft $
+// $Id: main.cpp 8062 2012-07-30 13:16:40Z marcus $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -34,6 +34,7 @@
 #	endif
 #endif
 
+#include <unistd.h>
 #include "getopt.h"
 #include "tempname.h"
 #include "tokenizer.hpp"
