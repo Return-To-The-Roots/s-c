@@ -1,4 +1,4 @@
-// $Id: getopt_long.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: getopt_long.cpp 9360 2014-04-25 15:45:29Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -25,11 +25,11 @@
 
 #ifdef _MSC_VER
 
-int getopt_long (int argc, char *const argv[], const char *shortopts, const struct option *longopts, int *longind)
+int getopt_long (int argc, char* const argv[], const char* shortopts, const struct option* longopts, int* longind)
 {
-	// not implemented
+    // not implemented
 
-	return EOF;
+    return EOF;
 }
 
 #endif // _MSC_VER

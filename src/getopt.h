@@ -1,4 +1,4 @@
-// $Id: getopt.h 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: getopt.h 9360 2014-04-25 15:45:29Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -21,22 +21,22 @@
 
 #ifdef _MSC_VER
 
-#define no_argument			0
-#define required_argument	1
-#define optional_argument	2
+#define no_argument         0
+#define required_argument   1
+#define optional_argument   2
 
 struct option
 {
-	const char *name;
-	int has_arg;
-	int *flag;
-	int val;
+    const char* name;
+    int has_arg;
+    int* flag;
+    int val;
 };
 
-extern char *optarg;
+extern char* optarg;
 
-extern "C" int getopt(int argc, char *const argv[], const char *optstring);
-extern "C" int getopt_long (int argc, char *const argv[], const char *shortopts, const struct option *longopts, int *longind);
+extern "C" int getopt(int argc, char* const argv[], const char* optstring);
+extern "C" int getopt_long (int argc, char* const argv[], const char* shortopts, const struct option* longopts, int* longind);
 
 #else // _MSC_VER
 

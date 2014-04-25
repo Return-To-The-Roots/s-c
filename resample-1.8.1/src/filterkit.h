@@ -1,6 +1,6 @@
 /*:filterkit.h */
 
-#include	"stdefs.h"
+#include    "stdefs.h"
 
 /*
  * LpFilter() - Calculates the filter coeffs for a Kaiser-windowed low-pass
@@ -18,7 +18,7 @@
  *                   the correct filter so zerox() can use it.
  * zerox() - Given a pointer into a sample, finds a zero-crossing on the
  *                   interval [pointer-1:pointer+2] by iteration.
- * Query() - Ask the user for a yes/no question with prompt, default, 
+ * Query() - Ask the user for a yes/no question with prompt, default,
  *                   and optional help.
  * GetUShort() - Ask the user for a unsigned short with prompt, default,
  *                   and optional help.
@@ -82,8 +82,8 @@ int writeFilter(HWORD Imp[], HWORD ImpD[], UHWORD LpScl, UHWORD Nmult, UHWORD Nw
  *   1 - could not open file
  */
 
-int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD *LpScl, UHWORD Nwing,
-	       double Froll, double Beta);
+int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD* LpScl, UHWORD Nwing,
+               double Froll, double Beta);
 /*
  * makeFilter
  * ERROR return codes:
@@ -94,9 +94,9 @@ int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD *LpScl, UHWORD Nwing,
  *    4 - LpScl will not fit in 16-bits
  */
 
-int readFilter(char *filterFile,
-	       HWORD **ImpP, HWORD **ImpDP, UHWORD *LpScl, 
-	       UHWORD *Nmult, UHWORD *Nwing);
+int readFilter(char* filterFile,
+               HWORD** ImpP, HWORD** ImpDP, UHWORD* LpScl,
+               UHWORD* Nmult, UHWORD* Nwing);
 /*
  * Read-in a filter
  *    Filter file format:
@@ -119,10 +119,10 @@ int readFilter(char *filterFile,
  */
 
 WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp,
-	      HWORD *Xp, HWORD Inc, HWORD Ph);
+              HWORD* Xp, HWORD Inc, HWORD Ph);
 
 WORD FilterUD(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp,
-	      HWORD *Xp, HWORD Ph, HWORD Inc, UHWORD dhb);
+              HWORD* Xp, HWORD Ph, HWORD Inc, UHWORD dhb);
 
 int initZerox(UHWORD tempNmult);
 /*
@@ -145,15 +145,15 @@ int initZerox(UHWORD tempNmult);
  * Rate(in).  Nmult (which determines which filter is used) is passed the
  * zerox's initialization routine: initZerox(Nmult)
  */
-double zerox(HWORD *Data, double Factor);
+double zerox(HWORD* Data, double Factor);
 
-BOOL Query(char *prompt, BOOL deflt, char *help);
+BOOL Query(char* prompt, BOOL deflt, char* help);
 
-unsigned short GetUShort(char *title, unsigned short deflt, char *help);
+unsigned short GetUShort(char* title, unsigned short deflt, char* help);
 
-double GetDouble(char *title, double deflt, char *help);
+double GetDouble(char* title, double deflt, char* help);
 
-char *GetString(char *prompt, char *deflt, char *help);
+char* GetString(char* prompt, char* deflt, char* help);
 
 #define GetUHWORD(x,y,z) GetUShort(x,y,z)
 

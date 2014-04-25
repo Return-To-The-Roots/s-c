@@ -2,7 +2,7 @@
  * FILE: resample.h
  *
  * The configuration constants below govern
- * the number of bits in the input sample and filter coefficients, the 
+ * the number of bits in the input sample and filter coefficients, the
  * number of bits to the right of the binary-point for fixed-point math, etc.
  *
  */
@@ -65,22 +65,22 @@
  *
  * NLpScl - is the number of bits allocated to the unity-gain normalization
  *    factor.  The output of the lowpass filter is multiplied by LpScl and
- *    then right-shifted NLpScl bits. To avoid overflow, we must have 
+ *    then right-shifted NLpScl bits. To avoid overflow, we must have
  *    Nb+Nhg+NLpScl < 32.
  */
 
 
-int resample(			/* number of output sample returned */
-    double factor,		/* factor = Sndout/Sndin */
-    int    infd,		/* input and output file descriptors */
+int resample(           /* number of output sample returned */
+    double factor,      /* factor = Sndout/Sndin */
+    int    infd,        /* input and output file descriptors */
     int    outfd,
-    int inCount,		/* number of input samples to convert */
-    int outCount,		/* number of output samples to compute */
-    int nChans,			/* number of sound channels (1 or 2) */
-    BOOL interpFilt,		/* TRUE means interpolate filter coeffs */
-    int fastMode,		/* 0 = highest quality, slowest speed */
-    BOOL largeFilter,		/* TRUE means use 65-tap FIR filter */
-    char *filterFile		/* NULL for internal filter, else filename */
+    int inCount,        /* number of input samples to convert */
+    int outCount,       /* number of output samples to compute */
+    int nChans,         /* number of sound channels (1 or 2) */
+    BOOL interpFilt,        /* TRUE means interpolate filter coeffs */
+    int fastMode,       /* 0 = highest quality, slowest speed */
+    BOOL largeFilter,       /* TRUE means use 65-tap FIR filter */
+    char* filterFile        /* NULL for internal filter, else filename */
 );
 
 //#define MUS_SAMPLE_TYPE mus_sample_t; // more incompatible changes to sndlib

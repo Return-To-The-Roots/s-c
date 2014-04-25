@@ -1,4 +1,4 @@
-// $Id: getopt.cpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: getopt.cpp 9360 2014-04-25 15:45:29Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -29,7 +29,7 @@
 int opterr = 1;
 int optind = 1;
 int optopt = 0;
-char *optarg = NULL;
+char* optarg = NULL;
 
 static int lastoptind = 0;
 
@@ -45,42 +45,42 @@ static int lastoptind = 0;
  *
  *  @author FloSoft
  */
-int getopt(int argc, char *const argv[], const char *optstring)
+int getopt(int argc, char* const argv[], const char* optstring)
 {
-	int index = (optind > 1 || optind == lastoptind) ? optind : 0;
-	
-	if(index >= argc)
-		return EOF;
+    int index = (optind > 1 || optind == lastoptind) ? optind : 0;
 
-	optarg = NULL;
+    if(index >= argc)
+        return EOF;
 
-	++index;
-	for(; index < argc; ++index)
-	{
-		if(argv[index][0] == '-')
-		{
-			// if '-' as argument, all following are non-arguments
-			if(strlen(argv[index]) == 2)
-			{
-				for(; *optstring; ++optstring)
-				{
-					if(argv[index][1] == *optstring)
-					{
-						if(*(optstring+1) == ':')
-							optarg = argv[++index];
+    optarg = NULL;
 
-						lastoptind = optind = index;
-						return *optstring;
-					}
-				}
-			}
-		}
-		optind = index;
-		return EOF;
-	}
+    ++index;
+    for(; index < argc; ++index)
+    {
+        if(argv[index][0] == '-')
+        {
+            // if '-' as argument, all following are non-arguments
+            if(strlen(argv[index]) == 2)
+            {
+                for(; *optstring; ++optstring)
+                {
+                    if(argv[index][1] == *optstring)
+                    {
+                        if(*(optstring + 1) == ':')
+                            optarg = argv[++index];
 
-	optind = 1;
-	return EOF;
+                        lastoptind = optind = index;
+                        return *optstring;
+                    }
+                }
+            }
+        }
+        optind = index;
+        return EOF;
+    }
+
+    optind = 1;
+    return EOF;
 }
 
 #endif // _MSC_VER
