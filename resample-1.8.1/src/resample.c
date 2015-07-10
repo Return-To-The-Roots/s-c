@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 	    (interpFilt? "":"-noFilterInterp "),
 	    insfname, outsfname);
 
-    outfd = sndlib_create(outsfname, inType, inFormat, newsrate, nChans, comment);
+    outfd = sndlib_create(outsfname, outType, outFormat, newsrate, nChans, comment);
     if (outfd == -1)
 	fails("Could not create output file \"%s\"", outsfname);
     outCount = (int)(factor * (double)inCount + 0.5);       /* output frames */
@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
     mus_file_close(outfd);
 	{
 		int sound_bytes = outCountReal * nChans * mus_bytes_per_sample(outFormat);
-		mus_header_change_data_size(outsfname, inType, sound_bytes);
+		mus_header_change_data_size(outsfname, outType, sound_bytes);
 	}
 
     printf("\nConversion Finished:  %d output samples.\n\n",outCount);
