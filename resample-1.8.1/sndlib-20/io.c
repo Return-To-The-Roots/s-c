@@ -34,7 +34,10 @@
 #if (defined(HAVE_LIBC_H) && (!defined(HAVE_UNISTD_H)))
   #include <libc.h>
 #else
-  #if (!(defined(_MSC_VER)))
+  #ifdef _MSC_VER
+	#include <io.h>
+    #include <direct.h>
+  #else
     #include <unistd.h>
   #endif
 #endif
@@ -1196,11 +1199,11 @@ static int mus_write_1(int tfd, int beg, int end, int chans, mus_sample_t **bufs
 	      break;
 	    case MUS_BFLOAT_UNSCALED:    
 	      for (; loc < loclim; loc++, jchar += siz_chans) 
-		m_set_big_endian_float(jchar, 32768.0 * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
+		m_set_big_endian_float(jchar, 32768.0f * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
 	      break;
 	    case MUS_LFLOAT_UNSCALED:    
 	      for (; loc < loclim; loc++, jchar += siz_chans) 
-		m_set_little_endian_float(jchar, 32768.0 * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
+		m_set_little_endian_float(jchar, 32768.0f * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
 	      break;
 	    case MUS_BDOUBLE_UNSCALED:
 	      for (; loc < loclim; loc++, jchar += siz_chans) 
@@ -1346,8 +1349,6 @@ char *mus_getcwd(void)
 #endif
   return(pwd);
 }
-
-char *strdup(const char *s);
 
 char *mus_expand_filename(const char *filename)
 {

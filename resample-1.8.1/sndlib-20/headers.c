@@ -87,7 +87,9 @@
 #if (defined(HAVE_LIBC_H) && (!defined(HAVE_UNISTD_H)))
   #include <libc.h>
 #else
-  #if (!(defined(_MSC_VER)))
+  #ifdef _MSC_VER
+	#include <io.h>
+  #else
     #include <unistd.h>
   #endif
 #endif
@@ -5075,8 +5077,6 @@ static int mus_header_read_1(const char *filename, int chan)
 static int local_error_type = MUS_NO_ERROR;
 static char *local_error_msg = NULL;
 static mus_error_handler_t *old_error_handler;
-
-char *strdup(const char *s);
 
 static void local_mus_error(int type, char *msg)
 {

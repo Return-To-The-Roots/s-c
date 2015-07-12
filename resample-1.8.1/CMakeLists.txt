@@ -9,7 +9,11 @@ CMAKE_POLICY(SET CMP0003 NEW)
 
 ################################################################################
 
-ADD_FLAGS(CMAKE_C_FLAGS "-std=c99")
+IF (NOT MSVC)
+	ADD_FLAGS(CMAKE_C_FLAGS "-std=c99")
+ELSE (NOT MSVC)
+	ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+ENDIF (NOT MSVC)
 
 ADD_SUBDIRECTORY( sndlib-20 )
 ADD_SUBDIRECTORY( src )
