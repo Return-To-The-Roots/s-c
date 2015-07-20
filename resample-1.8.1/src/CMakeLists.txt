@@ -4,12 +4,11 @@
 
 ADD_EXECUTABLE(s-c_resample resample.c filterkit.c resamplesubs.c sndlibextra.c)
 
-SET(s-c_resample_LIBS resample-sndlib-20)
 IF (NOT MSVC)
-	SET(s-c_resample_LIBS "${s-c_resample_LIBS} m")
+	TARGET_LINK_LIBRARIES(s-c_resample resample-sndlib-20 m)
+ELSE()
+	TARGET_LINK_LIBRARIES(s-c_resample resample-sndlib-20)
 ENDIF()
-
-TARGET_LINK_LIBRARIES(s-c_resample ${s-c_resample_LIBS})
 
 IF ( "${COMPILEFOR}" STREQUAL "windows" AND NOT MSVC)
 	ADD_CUSTOM_COMMAND(TARGET s-c_resample POST_BUILD COMMAND if [ -f s-c_resample.exe ] \; then cp -v s-c_resample.exe s-c_resample \; fi)
