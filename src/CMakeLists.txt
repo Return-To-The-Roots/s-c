@@ -12,7 +12,12 @@ IF ( "${COMPILEFOR}" STREQUAL "windows" AND NOT MSVC)
 	ADD_CUSTOM_COMMAND(TARGET sound-convert POST_BUILD COMMAND if [ -f sound-convert.exe ] \; then cp -v sound-convert.exe sound-convert \; fi)
 ENDIF ( "${COMPILEFOR}" STREQUAL "windows" AND NOT MSVC)
 		
-IF (NOT MSVC)
+IF (MSVC)
+	SET_TARGET_PROPERTIES(sound-convert PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}/../../RTTR/"
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_BINARY_DIR}/../../RTTR/"
+	)
+ELSE()
 	ADD_CUSTOM_COMMAND(TARGET sound-convert POST_BUILD COMMAND cp -v sound-convert ../../RTTR/sound-convert)
 ENDIF()
 		
