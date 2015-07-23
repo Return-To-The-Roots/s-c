@@ -89,6 +89,11 @@
 #else
   #ifdef _MSC_VER
 	#include <io.h>
+    #define lseek _lseek
+    #define close _close
+    #define read _read
+    #define write _write
+    #define strdup _strdup
   #else
     #include <unistd.h>
   #endif

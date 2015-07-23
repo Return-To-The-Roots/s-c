@@ -52,6 +52,17 @@
 #define O_BINARY 0
 #endif
 
+#ifdef _MSC_VER
+    #define lseek _lseek
+    #define open _open
+    #define close _close
+    #define read _read
+    #define write _write
+    #define strdup _strdup
+    #define getcwd _getcwd
+#endif
+
+
 /* data translations for big/little endian machines
  *   the m_* forms are macros where possible for speed (dating back to 1991 -- probably not needed)
  */
