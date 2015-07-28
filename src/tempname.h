@@ -1,4 +1,4 @@
-// $Id: tempname.h 9360 2014-04-25 15:45:29Z FloSoft $
+﻿// $Id: tempname.h 9360 2014-04-25 15:45:29Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //
@@ -21,7 +21,7 @@
 
 #pragma once
 
-/// liefert den Namen und Pfad einer tempor�ren Datei.
+/// liefert den Namen und Pfad einer temporären Datei.
 bool tempname(char* name, unsigned int length);
 
 #endif // !TEMPNAME_H_INCLUDED

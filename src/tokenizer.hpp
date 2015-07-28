@@ -1,4 +1,4 @@
-// $Id: tokenizer.hpp 7521 2011-09-08 20:45:55Z FloSoft $
+Ôªø// $Id: tokenizer.hpp 7521 2011-09-08 20:45:55Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 FloSoft (webmaster at ma.ra-doersch.de)
 //
@@ -45,7 +45,7 @@ public:
 	/**
 	 *  liefert den Status des Tokenizers.
 	 *
-	 *  @return @p true falls noch Tokens erwartet werden kˆnnen, 
+	 *  @return @p true falls noch Tokens erwartet werden k√∂nnen, 
 	 *          @p false falls der interne String leer ist.
 	 *
 	 *  @author FloSoft
@@ -55,11 +55,11 @@ public:
         return data.length() > 0; 
     }
 
-    /// extrahiert das n‰chste Token.
+    /// extrahiert das n√§chste Token.
 	/**
-	 *  extrahiert das n‰chste Token.
+	 *  extrahiert das n√§chste Token.
 	 *
-	 *  @return das n‰chste Token
+	 *  @return das n√§chste Token
 	 *
 	 *  @author FloSoft
 	 */

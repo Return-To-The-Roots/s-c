@@ -1,4 +1,4 @@
-// $Id: getopt.h 9360 2014-04-25 15:45:29Z FloSoft $
+﻿// $Id: getopt.h 9360 2014-04-25 15:45:29Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 Settlers Freaks (sf-team at siedler25.org)
 //

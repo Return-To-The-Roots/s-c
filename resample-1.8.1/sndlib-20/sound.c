@@ -19,7 +19,14 @@
 #if (defined(HAVE_LIBC_H) && (!defined(HAVE_UNISTD_H)))
   #include <libc.h>
 #else
-  #if (!(defined(_MSC_VER)))
+  #ifdef _MSC_VER
+	#include <io.h>
+    #define lseek _lseek
+    #define close _close
+    #define read _read
+    #define write _write
+    #define strdup _strdup
+  #else
     #include <unistd.h>
   #endif
   #if HAVE_STRING_H
@@ -769,8 +776,6 @@ int mus_sound_close_input(int fd)
 {
   return(mus_file_close(fd)); /* this closes the clm file descriptors */
 }
-
-char *strdup(const char *s);
 
 int mus_sound_close_output(int fd, off_t bytes_of_data) 
 {

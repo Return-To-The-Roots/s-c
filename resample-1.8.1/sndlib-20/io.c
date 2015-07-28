@@ -34,7 +34,10 @@
 #if (defined(HAVE_LIBC_H) && (!defined(HAVE_UNISTD_H)))
   #include <libc.h>
 #else
-  #if (!(defined(_MSC_VER)))
+  #ifdef _MSC_VER
+	#include <io.h>
+    #include <direct.h>
+  #else
     #include <unistd.h>
   #endif
 #endif
@@ -48,6 +51,17 @@
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
+
+#ifdef _MSC_VER
+    #define lseek _lseek
+    #define open _open
+    #define close _close
+    #define read _read
+    #define write _write
+    #define strdup _strdup
+    #define getcwd _getcwd
+#endif
+
 
 /* data translations for big/little endian machines
  *   the m_* forms are macros where possible for speed (dating back to 1991 -- probably not needed)
@@ -1196,11 +1210,11 @@ static int mus_write_1(int tfd, int beg, int end, int chans, mus_sample_t **bufs
 	      break;
 	    case MUS_BFLOAT_UNSCALED:    
 	      for (; loc < loclim; loc++, jchar += siz_chans) 
-		m_set_big_endian_float(jchar, 32768.0 * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
+		m_set_big_endian_float(jchar, 32768.0f * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
 	      break;
 	    case MUS_LFLOAT_UNSCALED:    
 	      for (; loc < loclim; loc++, jchar += siz_chans) 
-		m_set_little_endian_float(jchar, 32768.0 * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
+		m_set_little_endian_float(jchar, 32768.0f * MUS_SAMPLE_TO_FLOAT(buffer[loc]));
 	      break;
 	    case MUS_BDOUBLE_UNSCALED:
 	      for (; loc < loclim; loc++, jchar += siz_chans) 
@@ -1346,8 +1360,6 @@ char *mus_getcwd(void)
 #endif
   return(pwd);
 }
-
-char *strdup(const char *s);
 
 char *mus_expand_filename(const char *filename)
 {
