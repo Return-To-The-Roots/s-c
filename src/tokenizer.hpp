@@ -1,4 +1,4 @@
-﻿// $Id: tokenizer.hpp 7521 2011-09-08 20:45:55Z FloSoft $
+// $Id: tokenizer.hpp 7521 2011-09-08 20:45:55Z FloSoft $
 //
 // Copyright (c) 2005 - 2011 FloSoft (webmaster at ma.ra-doersch.de)
 //
