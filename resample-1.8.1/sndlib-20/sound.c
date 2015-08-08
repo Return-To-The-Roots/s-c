@@ -25,7 +25,6 @@
     #define close _close
     #define read _read
     #define write _write
-    #define strdup _strdup
   #else
     #include <unistd.h>
   #endif
@@ -36,6 +35,10 @@
 
 #include "_sndlib.h"
 #include "sndlib-strings.h"
+
+#ifdef _MSC_VER
+#define strdup _strdup
+#endif
 
 static mus_error_handler_t *mus_error_handler = NULL;
 
