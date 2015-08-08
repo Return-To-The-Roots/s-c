@@ -2,8 +2,10 @@
 
 #ifdef __APPLE__
 #include <sys/_endian.h>
-#else
+#elif defined __linux__
 #include <endian.h>
+#else
+#include <sys/endian.h>
 #endif
 
 #endif
