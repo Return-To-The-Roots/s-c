@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
     printf("using Script: \"%s\"\n\n", scs);
 
     libsiedler2::ArchivInfo input, output;
-    if(libsiedler2::Load(from, &input) != 0)
+    if(libsiedler2::Load(from, input) != 0)
     {
         printf("Can't open input file \"%s\"\n", from);
         return EXIT_FAILURE;
@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
         if(number == "copy")
         {
             printf("Copying item %d at line \"%d\"\n", frequency, linenr);
-            output.pushC(input.get(frequency));
+            output.pushC(*input.get(frequency));
             continue;
         }
 
@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
         if(frequency == 0 || item == NULL || number == "empty")
         {
             printf("Inserting empty item at line \"%d\"\n", linenr);
-            output.pushC(NULL);
+            output.push(NULL);
             continue;
         }
 
@@ -253,11 +253,11 @@ int main(int argc, char* argv[])
         unlink(file);
         unlink(file2);
 
-        output.pushC(&result);
+        output.pushC(result);
     }
     in.close();
 
-    if(libsiedler2::loader::WriteLST(to, NULL, &output) != 0)
+    if(libsiedler2::loader::WriteLST(to, NULL, output) != 0)
     {
         printf("Conversion failed - was not able to save results to \"%s\"\n", to);
         return EXIT_FAILURE;
