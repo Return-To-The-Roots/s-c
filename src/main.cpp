@@ -189,8 +189,7 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         }
 
-        unsigned char* data = new unsigned char[wave->getLength()];
-        memcpy(data, wave->getData(), wave->getLength());
+        std::vector<unsigned char> data = wave->getData();
         unsigned short bitrate = 8;
 #if BYTE_ORDER == BIG_ENDIAN
         frequency = libendian::swap_i(frequency);
@@ -200,7 +199,7 @@ int main(int argc, char* argv[])
         memcpy(&data[28], &frequency, 4);
         memcpy(&data[34], &bitrate, 2);
 
-        if(fwrite(data, 1, wave->getLength(), tmp) != wave->getLength())
+        if(fwrite(&data.front(), 1, wave->getLength(), tmp) != wave->getLength())
         {
             printf("Can't write to temporary file \"%s\" - write failed\n", file);
             return EXIT_FAILURE;
