@@ -3,6 +3,9 @@
 #################################################################################
 
 INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libsiedler2/src")
+# libSiedler2 headers use boost
+FIND_PACKAGE(Boost 1.54.0 REQUIRED)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp main.cpp tempname.cpp)
 
