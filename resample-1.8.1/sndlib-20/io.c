@@ -60,6 +60,8 @@
     #define write _write
     #define strdup _strdup
     #define getcwd _getcwd
+#else
+extern char *strdup(const char *s);
 #endif
 
 
