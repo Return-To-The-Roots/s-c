@@ -231,15 +231,15 @@ int main(int argc, char* argv[])
             //return EXIT_FAILURE;
         }
 
-        FILE* tmp2 = fopen(file2, "rb");
+        std::ifstream tmp2(file2, std::ios_base::binary);
         if(!tmp2)
         {
             printf("Can't open temporary file \"%s\" for reading\n", file2);
             return EXIT_FAILURE;
         }
-        fseek(tmp2, 0, SEEK_END);
-        unsigned int length = (unsigned int)ftell(tmp2);
-        fseek(tmp2, 0, SEEK_SET);
+        tmp2.seekg(0, std::ios_base::end);
+        unsigned length = static_cast<unsigned>(tmp2.tellg());
+        tmp2.seekg(0, std::ios_base::beg);
 
         libsiedler2::ArchivItem_Sound_Wave result;
         if(result.load(tmp2, length) != 0)
@@ -247,7 +247,6 @@ int main(int argc, char* argv[])
             printf("Can't read from temporary file \"%s\"\n", file2);
             return EXIT_FAILURE;
         }
-        fclose(tmp2);
 
         unlink(file);
         unlink(file2);
