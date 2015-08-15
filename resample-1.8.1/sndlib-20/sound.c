@@ -38,6 +38,8 @@
 
 #ifdef _MSC_VER
 #define strdup _strdup
+#else
+extern char *strdup(const char *s);
 #endif
 
 static mus_error_handler_t *mus_error_handler = NULL;
