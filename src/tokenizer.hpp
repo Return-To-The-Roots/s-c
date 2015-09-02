@@ -1,5 +1,3 @@
-// $Id: tokenizer.hpp 7521 2011-09-08 20:45:55Z FloSoft $
-//
 // Copyright (c) 2005 - 2015 FloSoft (webmaster at ma.ra-doersch.de)
 //
 // This file is part of Siedler II.5 RTTR.
