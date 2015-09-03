@@ -7,9 +7,9 @@ ELSE()
 	TARGET_LINK_LIBRARIES(s-c_resample resample-sndlib-20)
 ENDIF()
 
-IF ( "${COMPILEFOR}" STREQUAL "windows" AND NOT MSVC)
+IF ( "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND NOT MSVC)
 	ADD_CUSTOM_COMMAND(TARGET s-c_resample POST_BUILD COMMAND if [ -f s-c_resample.exe ] \; then cp -v s-c_resample.exe s-c_resample \; fi)
-ENDIF ( "${COMPILEFOR}" STREQUAL "windows" AND NOT MSVC)
+ENDIF ( "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND NOT MSVC)
 		
 IF (NOT MSVC)
 	ADD_CUSTOM_COMMAND(TARGET s-c_resample POST_BUILD COMMAND cp -v s-c_resample ../../../RTTR/s-c_resample)
