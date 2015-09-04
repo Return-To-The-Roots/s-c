@@ -8,9 +8,9 @@ ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp main.cpp tempname.cpp)
 
 TARGET_LINK_LIBRARIES(sound-convert siedler2 ${Boost_LIBRARIES})
 		
-IF ( "${COMPILEFOR}" STREQUAL "windows" AND NOT MSVC)
+IF ( "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND NOT MSVC)
 	ADD_CUSTOM_COMMAND(TARGET sound-convert POST_BUILD COMMAND if [ -f sound-convert.exe ] \; then cp -v sound-convert.exe sound-convert \; fi)
-ENDIF ( "${COMPILEFOR}" STREQUAL "windows" AND NOT MSVC)
+ENDIF ( "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND NOT MSVC)
 		
 IF (MSVC)
 	SET_TARGET_PROPERTIES(sound-convert PROPERTIES
