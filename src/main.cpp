@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
     printf("using Script: \"%s\"\n\n", scs);
 
     libsiedler2::ArchivInfo input, output;
-    if(libsiedler2::Load(from, &input) != 0)
+    if(libsiedler2::Load(from, input) != 0)
     {
         printf("Can't open input file \"%s\"\n", from);
         return EXIT_FAILURE;
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
         if(number == "copy")
         {
             printf("Copying item %d at line \"%d\"\n", frequency, linenr);
-            output.pushC(input.get(frequency));
+            output.pushC(*input.get(frequency));
             continue;
         }
 
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
         if(frequency == 0 || item == NULL || number == "empty")
         {
             printf("Inserting empty item at line \"%d\"\n", linenr);
-            output.pushC(NULL);
+            output.push(NULL);
             continue;
         }
 
@@ -187,8 +187,7 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         }
 
-        unsigned char* data = new unsigned char[wave->getLength()];
-        memcpy(data, wave->getData(), wave->getLength());
+        std::vector<unsigned char> data = wave->getData();
         unsigned short bitrate = 8;
 #if BYTE_ORDER == BIG_ENDIAN
         frequency = libendian::swap_i(frequency);
@@ -198,7 +197,7 @@ int main(int argc, char* argv[])
         memcpy(&data[28], &frequency, 4);
         memcpy(&data[34], &bitrate, 2);
 
-        if(fwrite(data, 1, wave->getLength(), tmp) != wave->getLength())
+        if(fwrite(&data.front(), 1, wave->getLength(), tmp) != wave->getLength())
         {
             printf("Can't write to temporary file \"%s\" - write failed\n", file);
             return EXIT_FAILURE;
@@ -230,15 +229,15 @@ int main(int argc, char* argv[])
             //return EXIT_FAILURE;
         }
 
-        FILE* tmp2 = fopen(file2, "rb");
+        std::ifstream tmp2(file2, std::ios_base::binary);
         if(!tmp2)
         {
             printf("Can't open temporary file \"%s\" for reading\n", file2);
             return EXIT_FAILURE;
         }
-        fseek(tmp2, 0, SEEK_END);
-        unsigned int length = (unsigned int)ftell(tmp2);
-        fseek(tmp2, 0, SEEK_SET);
+        tmp2.seekg(0, std::ios_base::end);
+        unsigned length = static_cast<unsigned>(tmp2.tellg());
+        tmp2.seekg(0, std::ios_base::beg);
 
         libsiedler2::ArchivItem_Sound_Wave result;
         if(result.load(tmp2, length) != 0)
@@ -246,16 +245,15 @@ int main(int argc, char* argv[])
             printf("Can't read from temporary file \"%s\"\n", file2);
             return EXIT_FAILURE;
         }
-        fclose(tmp2);
 
         unlink(file);
         unlink(file2);
 
-        output.pushC(&result);
+        output.pushC(result);
     }
     in.close();
 
-    if(libsiedler2::loader::WriteLST(to, NULL, &output) != 0)
+    if(libsiedler2::loader::WriteLST(to, NULL, output) != 0)
     {
         printf("Conversion failed - was not able to save results to \"%s\"\n", to);
         return EXIT_FAILURE;
