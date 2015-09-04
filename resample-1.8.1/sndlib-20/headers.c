@@ -96,6 +96,7 @@
     #define strdup _strdup
   #else
     #include <unistd.h>
+	extern char *strdup(const char *s);
   #endif
 #endif
 
