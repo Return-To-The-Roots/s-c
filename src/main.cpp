@@ -27,19 +27,20 @@
 #include <boost/filesystem.hpp>
 #include <boost/endian/conversion.hpp>
 #include <string>
-#include <fstream>
 #include <sstream>
+#include <fstream>
+#include <iostream>
 
 int usage(int argc, char* argv[])
 {
-    printf("Usage: %s -s script.scs -f source.lst -t destination.lst", argv[0]);
+    std::cout << "Usage: " << argv[0] << " -s script.scs -f source.lst -t destination.lst" << std::endl;
 
     return EXIT_FAILURE;
 }
 
 void myexit()
 {
-    //printf("Press enter to exit\n");
+    //std::cout << "Press enter to exit" << std::endl;
     //getc(stdin);
 }
 
@@ -72,22 +73,22 @@ int main(int argc, char* argv[])
     if(!scs || !to || !from)
         return usage(argc, argv);
 
-    printf("Starting samplerate conversion\n\n");
-    printf("Input file: \"%s\"\n", from);
-    printf("Output file: \"%s\"\n", to);
-    printf("using Script: \"%s\"\n\n", scs);
+    std::cout << "Starting samplerate conversion\n" << std::endl;
+    std::cout << "Input file: \"" << from << "\"" << std::endl;
+    std::cout << "Output file: \"" << to << "\"" << std::endl;
+    std::cout << "using Script: \"" << scs << "\"\n" << std::endl;
 
     libsiedler2::ArchivInfo input, output;
     if(libsiedler2::Load(from, input) != 0)
     {
-        printf("Can't open input file \"%s\"\n", from);
+        std::cout << "Can't open input file \"" << from << "\"" << std::endl;
         return EXIT_FAILURE;
     }
 
     std::ifstream in(scs);
     if(in.fail())
     {
-        printf("Can't open script file \"%s\"\n", scs);
+        std::cout << "Can't open script file \"" << scs << "\"" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -118,13 +119,13 @@ int main(int argc, char* argv[])
 
         /*if(frequency == 0)
         {
-            printf("Script error on line  \"%d\": frequency unparseable or null\n", linenr, nr, frequency);
+            std::cout << "Script error on line  \"%d\": frequency unparseable or null\n", linenr, nr, frequency);
             return EXIT_FAILURE;
         }*/
 
         if(number == "copy")
         {
-            printf("Copying item %d at line \"%d\"\n", frequency, linenr);
+            std::cout << "Copying item " << frequency << " at line " << linenr << "" << std::endl;
             output.pushC(*input.get(frequency));
             continue;
         }
@@ -132,21 +133,21 @@ int main(int argc, char* argv[])
         libsiedler2::ArchivItem* item = input.get(nr);
         if(frequency == 0 || item == NULL || number == "empty")
         {
-            printf("Inserting empty item at line \"%d\"\n", linenr);
+            std::cout << "Inserting empty item at line " << linenr << "" << std::endl;
             output.push(NULL);
             continue;
         }
 
         if(item->getBobType() != libsiedler2::BOBTYPE_SOUND)
         {
-            printf("Script error on line  \"%d\": item %d does not exist or is not a sound\n", linenr, nr);
+            std::cout << "Script error on line " << linenr << ": item " << nr << " does not exist or is not a sound" << std::endl;
             return EXIT_FAILURE;
         }
 
         libsiedler2::ArchivItem_Sound_Wave* wave = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(item);
         if(!wave)
         {
-            printf("Script error on line  \"%d\": item %d is not a wave-sound\n", linenr, nr);
+            std::cout << "Script error on line " << linenr << ": item " << nr << " is not a wave-sound" << std::endl;
             return EXIT_FAILURE;
         }
 
@@ -154,7 +155,7 @@ int main(int argc, char* argv[])
         std::string filePath = createTempFile(tmp, ".wav");
         if(!tmp)
         {
-            printf("Can't write to temporary file \"%s\" - disk full?\n", filePath.c_str());
+            std::cout << "Can't write to temporary file \"" << filePath << "\" - disk full?" << std::endl;
             return EXIT_FAILURE;
         }
 
@@ -169,7 +170,7 @@ int main(int argc, char* argv[])
 
         if(!tmp.write(reinterpret_cast<char*>(&data.front()), data.size()))
         {
-            printf("Can't write to temporary file \"%s\" - write failed\n", filePath);
+            std::cout << "Can't write to temporary file \"" << filePath << "\" - write failed" << std::endl;
             tmp.close();
             boost::filesystem::remove(filePath);
             return EXIT_FAILURE;
@@ -179,7 +180,7 @@ int main(int argc, char* argv[])
         std::string filePath2 = createTempFile(tmp, ".wav");
         if(!tmp)
         {
-            printf("Can't create 2nd temporary file\n");
+            std::cout << "Can't create 2nd temporary file" << std::endl;
             boost::filesystem::remove(filePath);
             return EXIT_FAILURE;
         }
@@ -202,7 +203,7 @@ int main(int argc, char* argv[])
 
         if(system(cmd.str().c_str()) != 0)
         {
-            std::cout << "Resampling failed, using original item\n";
+            std::cout << "Resampling failed, using original item" << std::endl;
             if(boost::filesystem::exists(filePath2))
                 boost::filesystem::remove(filePath2);
             filePath2 = filePath;
@@ -211,7 +212,7 @@ int main(int argc, char* argv[])
         std::ifstream tmp2(filePath2.c_str(), std::ios_base::binary);
         if(!tmp2)
         {
-            printf("Can't open temporary file \"%s\" for reading\n", filePath2);
+            std::cout << "Can't open temporary file \"" << filePath2 << "\" for reading" << std::endl;
             return EXIT_FAILURE;
         }
         tmp2.seekg(0, std::ios_base::end);
@@ -221,7 +222,7 @@ int main(int argc, char* argv[])
         libsiedler2::ArchivItem_Sound_Wave result;
         if(result.load(tmp2, length) != 0)
         {
-            printf("Can't read from temporary file \"%s\"\n", filePath2);
+            std::cout << "Can't read from temporary file \"" << filePath2 << "\"" << std::endl;
             return EXIT_FAILURE;
         }
 
@@ -235,11 +236,11 @@ int main(int argc, char* argv[])
 
     if(libsiedler2::loader::WriteLST(to, NULL, output) != 0)
     {
-        printf("Conversion failed - was not able to save results to \"%s\"\n", to);
+        std::cout << "Conversion failed - was not able to save results to \"" << to << "\"" << std::endl;
         return EXIT_FAILURE;
     }
 
-    printf("Conversion successful\n\n");
+    std::cout << "Conversion successful\n" << std::endl;
 
     return EXIT_SUCCESS;
 }
