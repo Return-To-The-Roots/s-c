@@ -1,12 +1,12 @@
 
-INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/libsiedler2/src")
+INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/..")
 # libSiedler2 headers use boost
-FIND_PACKAGE(Boost 1.55.0 COMPONENTS iostreams REQUIRED)
+FIND_PACKAGE(Boost 1.55.0 COMPONENTS iostreams system filesystem REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
-ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp main.cpp tempname.cpp)
+ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp main.cpp)
 
-TARGET_LINK_LIBRARIES(sound-convert siedler2 ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(sound-convert siedler2 s25util ${Boost_LIBRARIES})
 		
 IF ( "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND NOT MSVC)
 	ADD_CUSTOM_COMMAND(TARGET sound-convert POST_BUILD COMMAND if [ -f sound-convert.exe ] \; then cp -v sound-convert.exe sound-convert \; fi)

@@ -17,32 +17,18 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Systemheader
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
-#include <fstream>
-#include <sstream>
-
-#ifdef _WIN32
-#   include <windows.h>
-#   define unlink DeleteFileA
-#   ifdef _MSC_VER
-#       define snprintf _snprintf
-#   endif
-#endif
-
-#ifdef __GNUC__
-#include <unistd.h>
-#endif
 
 #include "getopt.h"
-#include "tempname.h"
 #include "tokenizer.hpp"
 
-#include "../../libsiedler2/src/libsiedler2.h"
-#include "../../libendian/src/libendian.h"
-#include "../../libendian/src/endianess.h"
+#include "libsiedler2/src/libsiedler2.h"
+#include "libutil/src/tmpFile.h"
+
+#include <boost/filesystem.hpp>
+#include <boost/endian/conversion.hpp>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 int usage(int argc, char* argv[])
 {
@@ -164,46 +150,40 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         }
 
-        char file[256];
-        if(!tempname(file, 256))
-        {
-            printf("Can't find first temporary filename for conversion?\n");
-            return EXIT_FAILURE;
-        }
-        //strncat(file, ".wav", 256);
-
-        char file2[256];
-        if(!tempname(file2, 256))
-        {
-            printf("Can't find second temporary filename for conversion?\n");
-            return EXIT_FAILURE;
-        }
-        //strncat(file2, ".wav", 256);
-
-        FILE* tmp = fopen(file, "wb");
+        std::ofstream tmp;
+        std::string filePath = createTempFile(tmp, ".wav");
         if(!tmp)
         {
-            printf("Can't write to temporary file \"%s\" - disk full?\n", file);
+            printf("Can't write to temporary file \"%s\" - disk full?\n", filePath.c_str());
             return EXIT_FAILURE;
         }
 
         std::vector<unsigned char> data = wave->getData();
         unsigned short bitrate = 8;
-#if BYTE_ORDER == BIG_ENDIAN
-        frequency = libendian::swap_i(frequency);
-        bitrate = libendian::swap_us(bitrate);
-#endif
+        boost::endian::native_to_little_inplace(frequency);
+        boost::endian::native_to_little_inplace(bitrate);
+
         memcpy(&data[24], &frequency, 4);
         memcpy(&data[28], &frequency, 4);
         memcpy(&data[34], &bitrate, 2);
 
-        if(fwrite(&data.front(), 1, wave->getLength(), tmp) != wave->getLength())
+        if(!tmp.write(reinterpret_cast<char*>(&data.front()), data.size()))
         {
-            printf("Can't write to temporary file \"%s\" - write failed\n", file);
+            printf("Can't write to temporary file \"%s\" - write failed\n", filePath);
+            tmp.close();
+            boost::filesystem::remove(filePath);
             return EXIT_FAILURE;
         }
-        fflush(tmp);
-        fclose(tmp);
+        tmp.close();
+
+        std::string filePath2 = createTempFile(tmp, ".wav");
+        if(!tmp)
+        {
+            printf("Can't create 2nd temporary file\n");
+            boost::filesystem::remove(filePath);
+            return EXIT_FAILURE;
+        }
+        tmp.close();
 
         std::stringstream cmd;
         std::string path = argv[0];
@@ -217,22 +197,21 @@ int main(int argc, char* argv[])
 #endif
 
         cmd << "-to 44100 ";
-        cmd << "\"" << file << "\" ";
-        cmd << "\"" << file2 << "\" ";
-
-        unlink(file2);
+        cmd << "\"" << filePath << "\" ";
+        cmd << "\"" << filePath2 << "\" ";
 
         if(system(cmd.str().c_str()) != 0)
         {
-            printf("Resampling failed, using original item\n");
-            strcpy(file2, file);
-            //return EXIT_FAILURE;
+            std::cout << "Resampling failed, using original item\n";
+            if(boost::filesystem::exists(filePath2))
+                boost::filesystem::remove(filePath2);
+            filePath2 = filePath;
         }
 
-        std::ifstream tmp2(file2, std::ios_base::binary);
+        std::ifstream tmp2(filePath2.c_str(), std::ios_base::binary);
         if(!tmp2)
         {
-            printf("Can't open temporary file \"%s\" for reading\n", file2);
+            printf("Can't open temporary file \"%s\" for reading\n", filePath2);
             return EXIT_FAILURE;
         }
         tmp2.seekg(0, std::ios_base::end);
@@ -242,12 +221,13 @@ int main(int argc, char* argv[])
         libsiedler2::ArchivItem_Sound_Wave result;
         if(result.load(tmp2, length) != 0)
         {
-            printf("Can't read from temporary file \"%s\"\n", file2);
+            printf("Can't read from temporary file \"%s\"\n", filePath2);
             return EXIT_FAILURE;
         }
 
-        unlink(file);
-        unlink(file2);
+        boost::filesystem::remove(filePath);
+        if(filePath != filePath2)
+            boost::filesystem::remove(filePath2);
 
         output.pushC(result);
     }
