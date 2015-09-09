@@ -185,6 +185,7 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         }
         tmp.close();
+        boost::filesystem::remove(filePath2);
 
         std::stringstream cmd;
         std::string path = argv[0];
