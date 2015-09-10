@@ -124,7 +124,7 @@ char *strerror(int errnum)
 static char *version_name = NULL;
 static bool audio_initialized = false;
 
-#ifndef MUS_MAC_OSX
+#if 0
 static const char *mus_audio_device_names[] = {
   S_mus_audio_default, S_mus_audio_duplex_default, S_mus_audio_adat_in, S_mus_audio_aes_in, S_mus_audio_line_out,
   S_mus_audio_line_in, S_mus_audio_microphone, S_mus_audio_speakers, S_mus_audio_digital_in, S_mus_audio_digital_out,
@@ -5941,7 +5941,7 @@ static void describe_audio_state_1(void)
 
 /* ------------------------------- WINDOZE ----------------------------------------- */
 
-#if defined(MUS_WINDOZE) && (!(defined(__CYGWIN__)))
+#if defined(MUS_WINDOZE) && (!(defined(__CYGWIN__))) && 0
 #define AUDIO_OK
 
 #include <windows.h>

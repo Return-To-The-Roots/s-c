@@ -35,9 +35,5 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 
 ADD_LIBRARY(resample-sndlib-20 STATIC audio.c sound.c io.c headers.c)
-
-IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-	TARGET_LINK_LIBRARIES(resample-sndlib-20 winmm)
-ENDIF()
 		
 #################################################################################
