@@ -124,7 +124,8 @@ char *strerror(int errnum)
 static char *version_name = NULL;
 static bool audio_initialized = false;
 
-/*static const char *mus_audio_device_names[] = {
+#ifndef MUS_MAC_OSX
+static const char *mus_audio_device_names[] = {
   S_mus_audio_default, S_mus_audio_duplex_default, S_mus_audio_adat_in, S_mus_audio_aes_in, S_mus_audio_line_out,
   S_mus_audio_line_in, S_mus_audio_microphone, S_mus_audio_speakers, S_mus_audio_digital_in, S_mus_audio_digital_out,
   S_mus_audio_dac_out, S_mus_audio_adat_out, S_mus_audio_aes_out, S_mus_audio_dac_filter, S_mus_audio_mixer,
@@ -134,14 +135,15 @@ static bool audio_initialized = false;
   S_mus_audio_pcm, S_mus_audio_pcm2, S_mus_audio_ogain, S_mus_audio_line, S_mus_audio_synth,
   S_mus_audio_bass, S_mus_audio_treble, S_mus_audio_port, S_mus_audio_samples_per_channel,
   S_mus_audio_direction
-};*/
+};
 
-/*static const char *mus_audio_device_name(int dev)
+static const char *mus_audio_device_name(int dev)
 {
   if (MUS_AUDIO_DEVICE_OK(dev))
     return(mus_audio_device_names[dev]);
   return("invalid device");
-}*/
+}
+#endif
 
 #if (!HAVE_OSS) || (HAVE_ALSA)
 /*static const char *mus_audio_format_names[] = {
@@ -6828,7 +6830,7 @@ int mus_audio_mixer_write(int ur_dev, int field, int chan, float *val)
  *   and to a much lesser extent, coreaudio.pdf and the HAL/Daisy examples.
  */
 
-#ifdef MUS_MAC_OSX
+#if defined(MUS_MAC_OSX) && 0
 #define AUDIO_OK 1
 
 /*
@@ -6859,7 +6861,7 @@ static char* osx_error(OSStatus err)
 char *device_name(AudioDeviceID deviceID, int input_case)
 {
   OSStatus err = noErr;
-  UInt32 size = 0, msize = 0, trans = 0, trans_size = 0;
+  UInt32 size = 0, msize = 0, trans = 0;
   char *name = NULL, *mfg = NULL, *full_name = NULL;
   err =  AudioDeviceGetPropertyInfo(deviceID, 0, false, kAudioDevicePropertyDeviceName, &size, NULL);
   if (err == noErr) err =  AudioDeviceGetPropertyInfo(deviceID, 0, false, kAudioDevicePropertyDeviceManufacturer, &msize, NULL);
