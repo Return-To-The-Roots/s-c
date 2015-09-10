@@ -208,12 +208,14 @@ int main(int argc, char* argv[])
             if(boost::filesystem::exists(filePath2))
                 boost::filesystem::remove(filePath2);
             filePath2 = filePath;
-        }
+        }else
+            boost::filesystem::remove(filePath);
 
         std::ifstream tmp2(filePath2.c_str(), std::ios_base::binary);
         if(!tmp2)
         {
             std::cerr << "Can't open temporary file \"" << filePath2 << "\" for reading" << std::endl;
+            boost::filesystem::remove(filePath2);
             return EXIT_FAILURE;
         }
         tmp2.seekg(0, std::ios_base::end);
@@ -224,12 +226,13 @@ int main(int argc, char* argv[])
         if(result.load(tmp2, length) != 0)
         {
             std::cerr << "Can't read from temporary file \"" << filePath2 << "\"" << std::endl;
+            tmp2.close();
+            boost::filesystem::remove(filePath2);
             return EXIT_FAILURE;
         }
 
-        boost::filesystem::remove(filePath);
-        if(filePath != filePath2)
-            boost::filesystem::remove(filePath2);
+        tmp2.close();
+        boost::filesystem::remove(filePath2);
 
         output.pushC(result);
     }
