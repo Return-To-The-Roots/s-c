@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
 
         std::string number = token.next();
         int nr = atoi(number.c_str());
-        int frequency = atoi(token.next().c_str());
+        int32_t frequency = atoi(token.next().c_str());
 
         /*if(frequency == 0)
         {
@@ -160,12 +160,17 @@ int main(int argc, char* argv[])
         }
 
         std::vector<unsigned char> data = wave->getData();
-        unsigned short bitrate = 8;
+        uint16_t bitrate = 8;
+        uint16_t numChannels = *reinterpret_cast<uint16_t*>(&data[22]);
+        boost::endian::little_to_native_inplace(numChannels);
+        uint16_t blockAlign = numChannels * ((bitrate + 7) / 8);
         boost::endian::native_to_little_inplace(frequency);
         boost::endian::native_to_little_inplace(bitrate);
+        boost::endian::native_to_little_inplace(blockAlign);
 
         memcpy(&data[24], &frequency, 4);
         memcpy(&data[28], &frequency, 4);
+        memcpy(&data[32], &blockAlign, 2);
         memcpy(&data[34], &bitrate, 2);
 
         if(!tmp.write(reinterpret_cast<char*>(&data.front()), data.size()))
