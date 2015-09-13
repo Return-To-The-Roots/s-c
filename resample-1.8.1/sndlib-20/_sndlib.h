@@ -235,20 +235,10 @@ enum {MUS_NO_ERROR, MUS_NO_FREQUENCY, MUS_NO_PHASE, MUS_NO_GEN, MUS_NO_LENGTH,
 #ifdef FOPEN
 #undef FOPEN
 #endif
-#if USE_SND
-#define OPEN(File, Flags, Mode) snd_open((File), (Flags), 0)
-#else
-#define OPEN(File, Flags, Mode) open((File), (Flags))
-#endif
-#else
-#if USE_SND
-#define OPEN(File, Flags, Mode) snd_open((File), (Flags), (Mode))
-#else
-#define OPEN(File, Flags, Mode) open((File), (Flags), (Mode))
-#endif
 #endif
 
 #if USE_SND
+#define OPEN(File, Flags, Mode)   snd_open((File), (Flags), (Mode))
 #define FOPEN(File, Flags)        snd_fopen((File), (Flags))
 #define CREAT(File, Flags)        snd_creat((File), (Flags))
 #define REMOVE(OldF)              snd_remove(OldF, IGNORE_CACHE)
@@ -256,6 +246,7 @@ enum {MUS_NO_ERROR, MUS_NO_FREQUENCY, MUS_NO_PHASE, MUS_NO_GEN, MUS_NO_LENGTH,
 #define CLOSE(Fd, Name)           snd_close(Fd, Name)
 #define FCLOSE(Fd, Name)          snd_fclose(Fd, Name)
 #else
+#define OPEN(File, Flags, Mode) open((File), (Flags), (Mode))
 #define FOPEN(File, Flags)        fopen((File), (Flags))
 #define CREAT(File, Flags)        creat((File), (Flags))
 #define REMOVE(OldF)              remove(OldF)
