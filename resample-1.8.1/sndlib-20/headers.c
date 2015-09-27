@@ -3268,7 +3268,6 @@ static int inrs_srates[NINRS] = {6500, 6667, 8000, 10000, 12000, 16000, 20000};
 
 static int read_inrs_header(const char *filename, int chan, int loc)
 {
-  true_file_length = SEEK_FILE_LENGTH(chan);
   comment_start = 6;
   comment_end = 25;
   data_format = MUS_LSHORT;
