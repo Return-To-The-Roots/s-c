@@ -47,7 +47,7 @@
  * the defaultAnswer value will be the original contents of "answer".
  * ???
  */
-static void getstr(char *prompt, char *defaultAnswer, char *answer)
+static void getstr(char *prompt, char *defaultAnswer, char *answer, int answerBufSize)
 {
   char *p,s[200];
 
@@ -64,7 +64,7 @@ static void getstr(char *prompt, char *defaultAnswer, char *answer)
   *(++p) = '\0';
 
   /* gets(answer); */
-  if(fgets(answer,sizeof(answer),stdin));
+  fgets(answer,answerBufSize - 1,stdin);
 
   answer[strlen(answer)-1] = '\0';
 
@@ -558,7 +558,7 @@ BOOL Query(char *prompt, BOOL deflt, char *help)
    while (TRUE)
       {
       sprintf(s,"\n%s%s", prompt, (*help) ? " (Type ? for help)" : "");
-      getstr(s,(deflt)?"yes":"no",s);
+      getstr(s,(deflt)?"yes":"no",s, sizeof(s));
       if (*s=='?' && *help)
          printf("%s", help);
       if (*s=='Y' || *s=='y')
@@ -576,7 +576,7 @@ char *GetString(char *prompt, char *deflt, char *help)
    while (TRUE)
       {
       sprintf(s,"\n%s%s",prompt, (*help) ? " (Type ? for Help)" : "");
-      getstr(s,deflt,s);
+      getstr(s,deflt,s, sizeof(s));
       if (*s=='?' && *help)
          printf("%s", help);
       else
@@ -594,7 +594,7 @@ double GetDouble(char *title, double deflt, char *help)
       {
       sprintf(s,"\n%s:%s",title, (*help) ? " (Type ? for Help)" : "");
       sprintf(sdeflt,"%g",deflt);
-      getstr(s,sdeflt,s);
+      getstr(s,sdeflt,s, sizeof(s));
       if (*s=='?' && *help)
          printf("%s", help);
       else
@@ -616,7 +616,7 @@ unsigned short GetUShort(char *title, unsigned short deflt, char *help)
       {
       sprintf(s,"\n%s:%s",title, (*help) ? " (Type ? for Help)" : "");
       sprintf(sdeflt,"%d",deflt);
-      getstr(s,sdeflt,s);
+      getstr(s,sdeflt,s, sizeof(s));
       if (*s=='?' && *help)
          printf("%s", help);
       else
