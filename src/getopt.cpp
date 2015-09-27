@@ -53,7 +53,7 @@ int getopt(int argc, char* const argv[], const char* optstring)
     optarg = NULL;
 
     ++index;
-    for(; index < argc; ++index)
+    if(index < argc)
     {
         if(argv[index][0] == '-')
         {
