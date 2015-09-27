@@ -87,7 +87,6 @@ sndlib_free_buffers(int **bufs, int nchans)
    assert(bufs != NULL);
 
    for (n = 0; n < nchans; n++)
-      if (bufs[n])
-         free(bufs[n]);
+      free(bufs[n]);
    free(bufs);
 }

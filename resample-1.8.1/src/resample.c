@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     int infd, outfd, insrate, nChans, result;
     int inType, inFormat;
     int outType, outFormat;
+    BOOL isFilterFileEmpty;
 
     struct stat statbuf;
     char *insfname, *outsfname, *argv0;
@@ -196,11 +197,12 @@ int main(int argc, char *argv[])
     if (newsrate <= 0)
       newsrate = (int)((double)insrate * factor + 0.5); /* round */
     
+    isFilterFileEmpty = strcmp(filterFile, "") == 0;
     sprintf(comment,"%s -by %f %s%s%s%s%s%s%s %s",argv0,factor,
 	    (largeFilter?"-expensiveFilter ":""),
-	    (strcmp(filterFile,"")==0?"":"-f "),
-	    (strcmp(filterFile,"")==0?"":filterFile),
-	    (strcmp(filterFile,"")==0?"":" "),
+	    (isFilterFileEmpty?"":"-f "),
+	    (isFilterFileEmpty?"":filterFile),
+	    (isFilterFileEmpty?"":" "),
 	    (linearInterp? "-linearSigInterp ":""),
 	    (interpFilt? "":"-noFilterInterp "),
 	    insfname, outsfname);
