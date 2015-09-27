@@ -36,10 +36,10 @@
 #define SGN(x)   ((x)<0   ?(-1):((x)==0?(0):(1)))
 #endif
 
-typedef char           BOOL;
+typedef char           BOOL; //-V677
 typedef short          HWORD;
 typedef unsigned short UHWORD;
-typedef int            WORD;
+typedef int            WORD; //-V677
 typedef unsigned int   UWORD;
 
 #define MUS_SAMPLE_TYPE_TO_HWORD(x) ((HWORD)((x)>>(MUS_SAMPLE_BITS-16)))
