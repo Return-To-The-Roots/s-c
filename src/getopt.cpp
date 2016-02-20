@@ -15,11 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Return To The Roots. If not, see <http://www.gnu.org/licenses/>.
 
-///////////////////////////////////////////////////////////////////////////////
-// Systemheader
-#include <stdio.h>
-#include <string.h>
-
 #include "getopt.h"
 
 #ifdef _MSC_VER

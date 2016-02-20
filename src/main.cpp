@@ -21,15 +21,27 @@
 #include "getopt.h"
 #include "tokenizer.hpp"
 
+#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/ArchivItem.h"
+#include "libsiedler2/src/ArchivItem_Sound_Wave.h"
+#include "libsiedler2/src/enumTypes.h"
+#include "libsiedler2/src/prototypen.h"
 #include "libsiedler2/src/libsiedler2.h"
 #include "libutil/src/tmpFile.h"
 
-#include <boost/filesystem.hpp>
 #include <boost/endian/conversion.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <cstddef>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <vector>
 
 int usage(int argc, char* argv[])
 {
