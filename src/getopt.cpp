@@ -18,6 +18,9 @@
 #include "getopt.h"
 
 #ifdef _MSC_VER
+#include <cstddef>
+#include <cstring>
+#include <cstdio>
 
 int opterr = 1;
 int optind = 1;
