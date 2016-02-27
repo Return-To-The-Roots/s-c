@@ -316,34 +316,41 @@ int readFilter(char *filterFile, HWORD **ImpP, HWORD **ImpDP, UHWORD *LpScl,
     if (fp == NULL)
       return(1);
     
-    if(fscanf(fp, "ScaleFactor ") != 0);
+    if(fscanf(fp, "ScaleFactor ") != 0)
+        ;
     if (1 != fscanf(fp,"%d",&temp))
       return(2);
     *LpScl = temp;
     
-    if(fscanf(fp, "\nLength ") != 0);
+    if(fscanf(fp, "\nLength ") != 0)
+        ;
     if (1 != fscanf(fp,"%d",&temp))
       return(3);
     *Nwing = temp;
     
-    if(fscanf(fp, "\nNmult ") != 0);
+    if(fscanf(fp, "\nNmult ") != 0)
+        ;
     if (1 != fscanf(fp,"%d",&temp))
       return(4);
     *Nmult = temp;
     
     Imp = (HWORD *) malloc(*Nwing * sizeof(HWORD));
     
-    if(fscanf(fp, "\nCoeffs:\n") != 0);
+    if(fscanf(fp, "\nCoeffs:\n") != 0)
+        ;
     for (i=0; i<*Nwing; i++)  { /* Get array of 16-bit filter coefficients */
-	if(fscanf(fp, "%d\n", &temp) != 0);
+	if(fscanf(fp, "%d\n", &temp) != 0)
+	    ;
 	Imp[i] = temp;
     }    
 
     ImpD = (HWORD *) malloc(*Nwing * sizeof(HWORD));
     
-    if(fscanf(fp, "\nDifferences:\n") != 0);
+    if(fscanf(fp, "\nDifferences:\n") != 0)
+        ;
     for (i=0; i<*Nwing; i++)  { /* Get array of 16bit filter coeff differences */
-	if(fscanf(fp, "%d\n", &temp) != 0);
+	if(fscanf(fp, "%d\n", &temp) != 0)
+	    ;
 	ImpD[i] = temp;
     }    
     
