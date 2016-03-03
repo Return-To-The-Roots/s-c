@@ -48,7 +48,7 @@ public:
 	 *
 	 *  @author FloSoft
 	 */
-    operator bool(void) const
+    operator bool() const
 	{
         return data.length() > 0; 
     }
@@ -61,7 +61,7 @@ public:
 	 *
 	 *  @author FloSoft
 	 */
-    std::string next(void)
+    std::string next()
 	{
         std::string r;
         std::string::size_type p = data.find_first_of(delimiter);
