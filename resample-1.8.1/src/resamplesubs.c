@@ -422,14 +422,11 @@ static int resampleWithFilter(  /* number of output samples returned */
         if (Nout > OBUFFSIZE) /* Check to see if output buff overflowed */
           return err_ret("Output array overflow");
         
-        if (nChans==1) {
+        for (i = 0; i < Nout; i++)
+          obufs[0][i] = HWORD_TO_MUS_SAMPLE_TYPE(Y1[i]);
+        if (nChans==2) {
             for (i = 0; i < Nout; i++)
-              obufs[0][i] = HWORD_TO_MUS_SAMPLE_TYPE(Y1[i]);
-        } else {
-            for (i = 0; i < Nout; i++) {
-                obufs[0][i] = HWORD_TO_MUS_SAMPLE_TYPE(Y1[i]);
-                obufs[1][i] = HWORD_TO_MUS_SAMPLE_TYPE(Y2[i]);
-            }
+              obufs[1][i] = HWORD_TO_MUS_SAMPLE_TYPE(Y2[i]);
         }
         /* NB: errors reported within sndlib */
         mus_file_write(outfd, 0, Nout - 1, nChans, obufs);
