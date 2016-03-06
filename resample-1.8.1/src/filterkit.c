@@ -313,6 +313,8 @@ int readFilter(char *filterFile, HWORD **ImpP, HWORD **ImpDP, UHWORD *LpScl,
       fname = filterFile;
     
     fp = fopen(fname, "r");
+    if (!filterFile || !(*filterFile))
+      free(fname);
     if (fp == NULL)
       return(1);
     
@@ -355,8 +357,6 @@ int readFilter(char *filterFile, HWORD **ImpP, HWORD **ImpDP, UHWORD *LpScl,
     }    
     
     fclose(fp);
-    if (!filterFile || !(*filterFile))
-      free(fname);
     *ImpP = Imp;
     *ImpDP = ImpD;
     return(0);

@@ -4514,6 +4514,7 @@ static int read_comdisco_header(const char *filename, int chan)
 	}
     }
   /* now clean up this mess */
+  FREE(line);
   if (data_location == 0)
     return(mus_error(MUS_HEADER_READ_FAILED, "%s: no $DATA BINARY field?", filename));
   if (srate == 0) return(mus_error(MUS_HEADER_READ_FAILED, "%s: srate == 0", filename));
@@ -4529,7 +4530,6 @@ static int read_comdisco_header(const char *filename, int chan)
   true_file_length = SEEK_FILE_LENGTH(chan);
   if (data_size > mus_bytes_to_samples(data_format, true_file_length - data_location))
     data_size = mus_bytes_to_samples(data_format, true_file_length - data_location);
-  FREE(line);
   return(MUS_NO_ERROR);
 }
 
