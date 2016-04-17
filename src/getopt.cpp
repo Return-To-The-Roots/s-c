@@ -29,8 +29,7 @@ char* optarg = NULL;
 
 static int lastoptind = 0;
 
-///////////////////////////////////////////////////////////////////////////////
-/*
+/**
  *  The getopt() function parses the command line arguments.
  *
  *  @param[in] argc      argument count passed to @p main.
@@ -38,8 +37,6 @@ static int lastoptind = 0;
  *  @param[in] optstring list of option characters.
  *
  *  @return option character or @p -1 on failure/no option
- *
- *  @author FloSoft
  */
 int getopt(int argc, char* const argv[], const char* optstring)
 {
