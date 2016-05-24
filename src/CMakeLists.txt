@@ -19,7 +19,7 @@ IF (MSVC)
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_CURRENT_BINARY_DIR}/../../RTTR/"
 	)
 ELSE()
-	ADD_CUSTOM_COMMAND(TARGET sound-convert POST_BUILD COMMAND cp -v sound-convert ../../RTTR/sound-convert)
+	ADD_CUSTOM_COMMAND(TARGET sound-convert POST_BUILD COMMAND cp -v $<TARGET_FILE:sound-convert> ../../RTTR/sound-convert)
 ENDIF()
 		
 INSTALL(TARGETS sound-convert DESTINATION ${RTTR_DATADIR}/RTTR)

@@ -18,7 +18,7 @@ IF (MSVC)
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_CURRENT_BINARY_DIR}/../../../RTTR/"
 	)
 ELSE()
-	ADD_CUSTOM_COMMAND(TARGET s-c_resample POST_BUILD COMMAND cp -v s-c_resample ../../../RTTR/s-c_resample)
+	ADD_CUSTOM_COMMAND(TARGET s-c_resample POST_BUILD COMMAND cp -v $<TARGET_FILE:s-c_resample> ../../../RTTR/s-c_resample)
 ENDIF()
 		
 INSTALL(TARGETS s-c_resample DESTINATION ${RTTR_DATADIR}/RTTR)
