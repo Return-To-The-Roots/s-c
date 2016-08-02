@@ -64,9 +64,10 @@ static void getstr(char *prompt, char *defaultAnswer, char *answer, int answerBu
   *(++p) = '\0';
 
   /* gets(answer); */
-  fgets(answer,answerBufSize - 1,stdin);
-
-  answer[strlen(answer)-1] = '\0';
+  if(fgets(answer,answerBufSize - 1,stdin) == NULL)
+    answer[0] = '\0';
+  else
+    answer[strlen(answer)-1] = '\0';
 
   if (answer[0] == '\0') {
     strcpy(answer, defaultAnswer);
@@ -253,7 +254,7 @@ int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD *LpScl, UHWORD Nwing,
       Maxh = MAX(Maxh, fabs(ImpR[i]));
 
    Scl = ((1<<(Nh-1))-1)/Maxh;     /* Map largest coeff to 16-bit maximum */
-   temp = fabs((1<<(NLpScl+Nh))/(DCgain*Scl));
+   temp = (int) fabs((1<<(NLpScl+Nh))/(DCgain*Scl));
    if (temp >= 1<<16)
       return(4);                   /* Filter scale factor overflows UHWORD */
    *LpScl = temp;
@@ -264,7 +265,7 @@ int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD *LpScl, UHWORD Nwing,
    for (i=0; i<Nwing; i++)         /* Scale them */
       ImpR[i] *= Scl;
    for (i=0; i<Nwing; i++)         /* Round them */
-      Imp[i] = ImpR[i] + 0.5;
+      Imp[i] = (int) (ImpR[i] + 0.5);
 
    /* ImpD makes linear interpolation of the filter coefficients faster */
    for (i=0; i<Nwing-1; i++)
@@ -532,7 +533,7 @@ double zerox(HWORD *Data, double Factor)
       hi = -1.0;
       }
    dh = (Factor<1) ? (Factor*Npc) : (Npc);
-   dhb = dh * (1<<Na) + 0.5;
+   dhb = (int) (dh * (1<<Na) + 0.5);
 
    for (i=0; i<MAXITER; i++)
       {

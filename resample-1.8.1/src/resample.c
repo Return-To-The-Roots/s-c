@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
     if (newsrate <= 0)
       newsrate = (int)((double)insrate * factor + 0.5); /* round */
     
-    isFilterFileEmpty = strcmp(filterFile, "") == 0;
+    isFilterFileEmpty = filterFile[0] == '\0';
     sprintf(comment,"%s -by %f %s%s%s%s%s%s%s %s",argv0,factor,
 	    (largeFilter?"-expensiveFilter ":""),
 	    (isFilterFileEmpty?"":"-f "),
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
 	    (interpFilt? "":"-noFilterInterp "),
 	    insfname, outsfname);
 
-    outfd = sndlib_create(outsfname, outType, outFormat, newsrate, nChans, comment);
+    outfd = sndlib_create(outsfname, outType, outFormat, (int)newsrate, nChans, comment);
     if (outfd == -1)
 	fails("Could not create output file \"%s\"", outsfname);
     outCount = (int)(factor * (double)inCount + 0.5);       /* output frames */

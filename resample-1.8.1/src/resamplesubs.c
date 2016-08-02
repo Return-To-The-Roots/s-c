@@ -121,7 +121,7 @@ static int
     UWORD endTime;              /* When Time reaches EndTime, return to user */
     
     dt = 1.0/factor;            /* Output sampling period */
-    dtb = dt*(1<<Np) + 0.5;     /* Fixed-point representation */
+    dtb = (UWORD) (dt*(1<<Np) + 0.5);     /* Fixed-point representation */
     
     Ystart = Y;
     endTime = *Time + (1<<Np)*(WORD)Nx;
@@ -155,7 +155,7 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
     UWORD endTime;              /* When Time reaches EndTime, return to user */
     
     dt = 1.0/factor;            /* Output sampling period */
-    dtb = dt*(1<<Np) + 0.5;     /* Fixed-point representation */
+    dtb = (UWORD) (dt*(1<<Np) + 0.5);     /* Fixed-point representation */
     
     Ystart = Y;
     endTime = *Time + (1<<Np)*(WORD)Nx;
@@ -192,10 +192,10 @@ static int SrcUD(HWORD X[], HWORD Y[], double factor, UWORD *Time,
     UWORD dhb, dtb;             /* Fixed-point versions of Dh,Dt */
     
     dt = 1.0/factor;            /* Output sampling period */
-    dtb = dt*(1<<Np) + 0.5;     /* Fixed-point representation */
+    dtb = (UWORD) (dt*(1<<Np) + 0.5);     /* Fixed-point representation */
     
     dh = MIN(Npc, factor*Npc);  /* Filter sampling period */
-    dhb = dh*(1<<Na) + 0.5;     /* Fixed-point representation */
+    dhb = (UWORD) (dh*(1<<Na) + 0.5);     /* Fixed-point representation */
     
     Ystart = Y;
     endTime = *Time + (1<<Np)*(WORD)Nx;
@@ -348,10 +348,10 @@ static int resampleWithFilter(  /* number of output samples returned */
 
     /* Account for increased filter gain when using factors less than 1 */
     if (factor < 1)
-      LpScl = LpScl*factor + 0.5;
+      LpScl = (UHWORD) (LpScl*factor + 0.5);
 
     /* Calc reach of LP filter wing & give some creeping room */
-    Xoff = ((Nmult+1)/2.0) * MAX(1.0,1.0/factor) + 10;
+    Xoff = ((UHWORD) (((Nmult+1)/2.0) * MAX(1.0,1.0/factor))) + 10;
 
     if (IBUFFSIZE < 2*Xoff)      /* Check input buffer size */
       return err_ret("IBUFFSIZE (or factor) is too small");
