@@ -366,7 +366,7 @@ static int resampleWithFilter(  /* number of output samples returned */
     
     for (i=0; i<Xoff; X1[i++]=0); /* Need Xoff zeros at begining of sample */
     for (i=0; i<Xoff; X2[i++]=0); /* Need Xoff zeros at begining of sample */
-        
+
     do {
         if (!last)              /* If haven't read last sample yet */
         {
@@ -493,7 +493,7 @@ int resample(                   /* number of output samples returned */
     fprintf(stderr,"Attenuating resampler scale factor by 0.95 "
             "to reduce probability of clipping\n");
 #endif
-    LpScl *= 0.95;
+    LpScl = (UHWORD) (LpScl * 0.95);
     return resampleWithFilter(factor,infd,outfd,inCount,outCount,nChans, 
                               interpFilt, Imp, ImpD, LpScl, Nmult, Nwing);
 }
