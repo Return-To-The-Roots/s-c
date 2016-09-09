@@ -22,6 +22,6 @@ ELSE()
 	ADD_CUSTOM_COMMAND(TARGET sound-convert POST_BUILD COMMAND cp -v $<TARGET_FILE:sound-convert> ../../RTTR/sound-convert)
 ENDIF()
 		
-INSTALL(TARGETS sound-convert DESTINATION ${RTTR_DATADIR}/RTTR)
+INSTALL(TARGETS sound-convert DESTINATION ${RTTR_LIBDIR}/RTTR)
 
 #################################################################################
