@@ -21,6 +21,6 @@ ELSE()
 	ADD_CUSTOM_COMMAND(TARGET s-c_resample POST_BUILD COMMAND cp -v $<TARGET_FILE:s-c_resample> ../../../RTTR/s-c_resample)
 ENDIF()
 		
-INSTALL(TARGETS s-c_resample DESTINATION ${RTTR_DATADIR}/RTTR)
+INSTALL(TARGETS s-c_resample DESTINATION ${RTTR_LIBDIR}/RTTR)
 
 #################################################################################
