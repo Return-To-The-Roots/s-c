@@ -32,7 +32,8 @@ CHECK_INCLUDE_FILE(stdint.h HAVE_STDINT_H)
 
 CONFIGURE_FILE(mus-config.h.cmake mus-config.h @ONLY)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-
+# Avoid warning in some GCC versions
+ADD_DEFINITIONS(-Wno-strict-overflow)
 
 ADD_LIBRARY(resample-sndlib-20 STATIC audio.c sound.c io.c headers.c)
 		
