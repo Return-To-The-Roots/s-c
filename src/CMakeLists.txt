@@ -3,7 +3,7 @@ INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/..")
 FIND_PACKAGE(Boost 1.55.0 COMPONENTS iostreams system filesystem REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
-ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp main.cpp)
+ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp sound-convert.cpp)
 
 TARGET_LINK_LIBRARIES(sound-convert siedler2 s25util ${Boost_LIBRARIES})
 
