@@ -27,6 +27,7 @@
 #include "libsiedler2/src/enumTypes.h"
 #include "libsiedler2/src/prototypen.h"
 #include "libsiedler2/src/libsiedler2.h"
+#include "libsiedler2/src/ErrorCodes.h"
 #include "libutil/src/tmpFile.h"
 
 #include <boost/endian/conversion.hpp>
@@ -91,9 +92,9 @@ int main(int argc, char* argv[])
     std::cout << "using Script: \"" << scs << "\"\n" << std::endl;
 
     libsiedler2::ArchivInfo input, output;
-    if(libsiedler2::Load(from, input) != 0)
+    if(int ec = libsiedler2::Load(from, input))
     {
-        std::cerr << "Can't open input file \"" << from << "\"" << std::endl;
+        std::cerr << "Can't open input file \"" << from << "\" " << libsiedler2::getErrorString(ec) << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -171,23 +172,18 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         }
 
-        std::vector<unsigned char> data = wave->getData();
+        libsiedler2::WAV_Header header = wave->getHeader();
         uint16_t bitrate = 8;
-        uint16_t numChannels = *reinterpret_cast<uint16_t*>(&data[22]);
-        boost::endian::little_to_native_inplace(numChannels);
-        uint16_t blockAlign = numChannels * ((bitrate + 7) / 8);
-        boost::endian::native_to_little_inplace(frequency);
-        boost::endian::native_to_little_inplace(bitrate);
-        boost::endian::native_to_little_inplace(blockAlign);
+        uint16_t blockAlign = header.numChannels * ((bitrate + 7) / 8);
+        header.samplesPerSec = frequency;
+        header.bytesPerSec = frequency * blockAlign;
+        header.frameSize = blockAlign;
+        header.bitsPerSample = bitrate;
+        wave->setHeader(header);
 
-        memcpy(&data[24], &frequency, 4);
-        memcpy(&data[28], &frequency, 4);
-        memcpy(&data[32], &blockAlign, 2);
-        memcpy(&data[34], &bitrate, 2);
-
-        if(!tmp.write(reinterpret_cast<char*>(&data.front()), data.size()))
+        if(int ec = wave->write(tmp, false))
         {
-            std::cerr << "Can't write to temporary file \"" << filePath << "\" - write failed" << std::endl;
+            std::cerr << "Can't write to temporary file \"" << filePath << "\" - write failed with " << libsiedler2::getErrorString(ec) << std::endl;
             tmp.close();
             boost::filesystem::remove(filePath);
             return EXIT_FAILURE;
@@ -255,7 +251,7 @@ int main(int argc, char* argv[])
     }
     in.close();
 
-    if(libsiedler2::loader::WriteLST(to, NULL, output) != 0)
+    if(libsiedler2::loader::WriteLST(to, output) != 0)
     {
         std::cerr << "Conversion failed - was not able to save results to \"" << to << "\"" << std::endl;
         return EXIT_FAILURE;
