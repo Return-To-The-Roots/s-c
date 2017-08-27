@@ -904,6 +904,8 @@ off_t mus_sound_maxamps(const char *ifile, int chans, mus_sample_t *vals, off_t 
   ifd = mus_sound_open_input(ifile);
   if (ifd == MUS_ERROR) return(MUS_ERROR);
   ichans = mus_sound_chans(ifile);
+  /// Can never happen but should silence static analyzer warnings
+  if(ichans == MUS_ERROR) return(MUS_ERROR);
   frames = mus_sound_frames(ifile);
   if (frames == 0) 
     {
