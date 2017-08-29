@@ -21,7 +21,7 @@
 #include "getopt.h"
 #include "tokenizer.hpp"
 
-#include "libsiedler2/src/ArchivInfo.h"
+#include "libsiedler2/src/Archiv.h"
 #include "libsiedler2/src/ArchivItem.h"
 #include "libsiedler2/src/ArchivItem_Sound_Wave.h"
 #include "libsiedler2/src/enumTypes.h"
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     std::cout << "Output file: \"" << to << "\"" << std::endl;
     std::cout << "using Script: \"" << scs << "\"\n" << std::endl;
 
-    libsiedler2::ArchivInfo input, output;
+    libsiedler2::Archiv input, output;
     if(int ec = libsiedler2::Load(from, input))
     {
         std::cerr << "Can't open input file \"" << from << "\" " << libsiedler2::getErrorString(ec) << std::endl;
