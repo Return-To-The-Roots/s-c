@@ -17,13 +17,12 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Systemheader
-#include <cstdio>
-
 #include "getopt.h"
+#include <cstdio>
 
 #ifdef _MSC_VER
 
-int getopt_long (int argc, char* const argv[], const char* shortopts, const struct option* longopts, int* longind)
+int getopt_long(int argc, char* const argv[], const char* shortopts, const struct option* longopts, int* longind)
 {
     // not implemented
 

@@ -20,27 +20,25 @@
 
 #include "getopt.h"
 #include "tokenizer.hpp"
-
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem.h"
 #include "libsiedler2/ArchivItem_Sound_Wave.h"
-#include "libsiedler2/enumTypes.h"
-#include "libsiedler2/prototypen.h"
-#include "libsiedler2/libsiedler2.h"
 #include "libsiedler2/ErrorCodes.h"
+#include "libsiedler2/enumTypes.h"
+#include "libsiedler2/libsiedler2.h"
+#include "libsiedler2/prototypen.h"
 #include "libutil/tmpFile.h"
-
 #include <boost/endian/conversion.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <iostream>
 #include <cstddef>
-#include <stdint.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <stdint.h>
+#include <string>
 #include <sys/types.h>
 #include <vector>
 
@@ -53,14 +51,14 @@ int usage(int argc, char* argv[])
 
 void myexit()
 {
-    //std::cout << "Press enter to exit" << std::endl;
-    //getc(stdin);
+    // std::cout << "Press enter to exit" << std::endl;
+    // getc(stdin);
 }
 
 int main(int argc, char* argv[])
 {
     int index;
-    const char* from = NULL, *to = NULL, *scs = NULL;
+    const char *from = NULL, *to = NULL, *scs = NULL;
 
     atexit(myexit);
 
@@ -71,15 +69,14 @@ int main(int argc, char* argv[])
             case 's': // Pidfile
             {
                 scs = optarg;
-            } break;
-            case 'f':
-            {
-                from = optarg;
-            } break;
-            case 't':
-            {
-                to = optarg;
-            } break;
+            }
+            break;
+            case 'f': { from = optarg;
+            }
+            break;
+            case 't': { to = optarg;
+            }
+            break;
         }
     }
 
@@ -183,7 +180,8 @@ int main(int argc, char* argv[])
 
         if(int ec = wave->write(tmp, false))
         {
-            std::cerr << "Can't write to temporary file \"" << filePath << "\" - write failed with " << libsiedler2::getErrorString(ec) << std::endl;
+            std::cerr << "Can't write to temporary file \"" << filePath << "\" - write failed with " << libsiedler2::getErrorString(ec)
+                      << std::endl;
             tmp.close();
             boost::filesystem::remove(filePath);
             return EXIT_FAILURE;
@@ -221,7 +219,7 @@ int main(int argc, char* argv[])
             if(boost::filesystem::exists(filePath2))
                 boost::filesystem::remove(filePath2);
             filePath2 = filePath;
-        }else
+        } else
             boost::filesystem::remove(filePath);
 
         std::ifstream tmp2(filePath2.c_str(), std::ios_base::binary);

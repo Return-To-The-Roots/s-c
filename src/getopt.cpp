@@ -19,8 +19,8 @@
 
 #ifdef _MSC_VER
 #include <cstddef>
-#include <cstring>
 #include <cstdio>
+#include <cstring>
 
 int opterr = 1;
 int optind = 1;
