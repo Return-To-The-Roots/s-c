@@ -1,9 +1,6 @@
-# libSiedler2 headers use boost
-FIND_PACKAGE(Boost 1.55.0 COMPONENTS iostreams system filesystem REQUIRED)
-INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/..)
 
-ADD_EXECUTABLE(sound-convert getopt.cpp getopt_long.cpp sound-convert.cpp)
+set(SRC_FILES getopt.cpp getopt_long.cpp sound-convert.cpp)
+ADD_EXECUTABLE(sound-convert ${SRC_FILES})
 
 TARGET_LINK_LIBRARIES(sound-convert siedler2 s25util ${Boost_LIBRARIES})
 
@@ -15,3 +12,6 @@ SET_TARGET_PROPERTIES(sound-convert PROPERTIES
 )
 
 INSTALL(TARGETS sound-convert DESTINATION ${RTTR_BINDIR}/RTTR)
+if(ClangFormat_FOUND)
+    add_clangFormat_files(${SRC_FILES})
+endif()

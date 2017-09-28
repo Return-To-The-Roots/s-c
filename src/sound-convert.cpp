@@ -21,14 +21,14 @@
 #include "getopt.h"
 #include "tokenizer.hpp"
 
-#include "libsiedler2/src/Archiv.h"
-#include "libsiedler2/src/ArchivItem.h"
-#include "libsiedler2/src/ArchivItem_Sound_Wave.h"
-#include "libsiedler2/src/enumTypes.h"
-#include "libsiedler2/src/prototypen.h"
-#include "libsiedler2/src/libsiedler2.h"
-#include "libsiedler2/src/ErrorCodes.h"
-#include "libutil/src/tmpFile.h"
+#include "libsiedler2/Archiv.h"
+#include "libsiedler2/ArchivItem.h"
+#include "libsiedler2/ArchivItem_Sound_Wave.h"
+#include "libsiedler2/enumTypes.h"
+#include "libsiedler2/prototypen.h"
+#include "libsiedler2/libsiedler2.h"
+#include "libsiedler2/ErrorCodes.h"
+#include "libutil/tmpFile.h"
 
 #include <boost/endian/conversion.hpp>
 #include <boost/filesystem/operations.hpp>
