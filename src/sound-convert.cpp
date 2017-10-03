@@ -18,7 +18,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Systemheader
 
-#include "getopt.h"
 #include "tokenizer.hpp"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem.h"
@@ -27,78 +26,59 @@
 #include "libsiedler2/enumTypes.h"
 #include "libsiedler2/libsiedler2.h"
 #include "libsiedler2/prototypen.h"
+#include "libutil/LocaleHelper.h"
 #include "libutil/tmpFile.h"
 #include <boost/endian/conversion.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <cstddef>
-#include <cstdio>
+#include <boost/nowide/args.hpp>
+#include <boost/nowide/fstream.hpp>
+#include <boost/nowide/iostream.hpp>
+#include <boost/nowide/system.hpp>
+#include <boost/program_options.hpp>
 #include <cstdlib>
-#include <cstring>
-#include <fstream>
-#include <iostream>
 #include <sstream>
 #include <stdint.h>
 #include <string>
-#include <sys/types.h>
 #include <vector>
 
-int usage(int argc, char* argv[])
-{
-    std::cerr << "Usage: " << argv[0] << " -s script.scs -f source.lst -t destination.lst" << std::endl;
-
-    return EXIT_FAILURE;
-}
-
-void myexit()
-{
-    // std::cout << "Press enter to exit" << std::endl;
-    // getc(stdin);
-}
+namespace bnw = boost::nowide;
+namespace po = boost::program_options;
 
 int main(int argc, char* argv[])
 {
-    int index;
-    const char *from = NULL, *to = NULL, *scs = NULL;
+    std::string script, from, to;
+    boost::nowide::args(argc, argv);
+    po::options_description desc("Allowed options");
+    desc.add_options()("help,h", "Show help")("script,s", po::value<std::string>(&script)->required(), "Script (*.scs) to use")(
+      "from,f", po::value<std::string>(&from)->required(), "Source.lst to read from")("to,t", po::value<std::string>(&to)->required(),
+                                                                                      "Destination.lst to write to");
 
-    atexit(myexit);
+    po::variables_map options;
+    po::store(po::parse_command_line(argc, argv, desc), options);
+    po::notify(options);
 
-    while((index = getopt(argc, argv, "s:f:t:")) != EOF)
+    if(options.count("help"))
     {
-        switch(index)
-        {
-            case 's': // Pidfile
-            {
-                scs = optarg;
-            }
-            break;
-            case 'f': { from = optarg;
-            }
-            break;
-            case 't': { to = optarg;
-            }
-            break;
-        }
+        bnw::cout << desc;
+        return EXIT_FAILURE;
     }
-
-    if(!scs || !to || !from)
-        return usage(argc, argv);
 
     std::cout << "Starting samplerate conversion\n" << std::endl;
     std::cout << "Input file: \"" << from << "\"" << std::endl;
     std::cout << "Output file: \"" << to << "\"" << std::endl;
-    std::cout << "using Script: \"" << scs << "\"\n" << std::endl;
+    std::cout << "using Script: \"" << script << "\"\n" << std::endl;
 
     libsiedler2::Archiv input, output;
     if(int ec = libsiedler2::Load(from, input))
     {
-        std::cerr << "Can't open input file \"" << from << "\" " << libsiedler2::getErrorString(ec) << std::endl;
+        bnw::cerr << "Can't open input file \"" << from << "\" " << libsiedler2::getErrorString(ec) << std::endl;
         return EXIT_FAILURE;
     }
 
-    std::ifstream in(scs);
-    if(in.fail())
+    bnw::ifstream in(script);
+    if(!in)
     {
-        std::cerr << "Can't open script file \"" << scs << "\"" << std::endl;
+        bnw::cerr << "Can't open script file \"" << script << "\"" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -118,7 +98,7 @@ int main(int argc, char* argv[])
         }
         emptylines = 0;
 
-        if(line.at(0) == '#')
+        if(line[0] == '#')
             continue;
 
         tokenizer token(line);
@@ -129,13 +109,13 @@ int main(int argc, char* argv[])
 
         /*if(frequency == 0)
         {
-            std::cerr << "Script error on line  \"%d\": frequency unparseable or null\n", linenr, nr, frequency);
+            bnw::cerr << "Script error on line  \"%d\": frequency unparseable or null\n", linenr, nr, frequency);
             return EXIT_FAILURE;
         }*/
 
         if(number == "copy")
         {
-            std::cerr << "Copying item " << frequency << " at line " << linenr << "" << std::endl;
+            bnw::cout << "Copying item " << frequency << " at line " << linenr << "" << std::endl;
             output.pushC(*input.get(frequency));
             continue;
         }
@@ -143,29 +123,28 @@ int main(int argc, char* argv[])
         libsiedler2::ArchivItem* item = input.get(nr);
         if(frequency == 0 || item == NULL || number == "empty")
         {
-            std::cerr << "Inserting empty item at line " << linenr << "" << std::endl;
+            bnw::cout << "Inserting empty item at line " << linenr << "" << std::endl;
             output.push(NULL);
             continue;
         }
 
         if(item->getBobType() != libsiedler2::BOBTYPE_SOUND)
         {
-            std::cerr << "Script error on line " << linenr << ": item " << nr << " does not exist or is not a sound" << std::endl;
+            bnw::cerr << "Script error on line " << linenr << ": item " << nr << " does not exist or is not a sound" << std::endl;
             return EXIT_FAILURE;
         }
 
         libsiedler2::ArchivItem_Sound_Wave* wave = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(item);
         if(!wave)
         {
-            std::cerr << "Script error on line " << linenr << ": item " << nr << " is not a wave-sound" << std::endl;
+            bnw::cerr << "Script error on line " << linenr << ": item " << nr << " is not a wave-sound" << std::endl;
             return EXIT_FAILURE;
         }
 
-        std::ofstream tmp;
-        std::string filePath = createTempFile(tmp, ".wav");
-        if(!tmp)
+        TmpFile tmp(".wav");
+        if(!tmp.isValid())
         {
-            std::cerr << "Can't write to temporary file \"" << filePath << "\" - disk full?" << std::endl;
+            bnw::cerr << "Can't write to temporary file - disk full?" << std::endl;
             return EXIT_FAILURE;
         }
 
@@ -178,25 +157,23 @@ int main(int argc, char* argv[])
         header.bitsPerSample = bitrate;
         wave->setHeader(header);
 
-        if(int ec = wave->write(tmp, false))
+        if(int ec = wave->write(tmp.getStream(), false))
         {
-            std::cerr << "Can't write to temporary file \"" << filePath << "\" - write failed with " << libsiedler2::getErrorString(ec)
+            bnw::cerr << "Can't write to temporary file \"" << tmp.filePath << "\" - write failed with " << libsiedler2::getErrorString(ec)
                       << std::endl;
             tmp.close();
-            boost::filesystem::remove(filePath);
             return EXIT_FAILURE;
         }
         tmp.close();
 
-        std::string filePath2 = createTempFile(tmp, ".wav");
-        if(!tmp)
+        TmpFile tmp2(".wav");
+        if(!tmp2.isValid())
         {
-            std::cerr << "Can't create 2nd temporary file" << std::endl;
-            boost::filesystem::remove(filePath);
+            bnw::cerr << "Can't create 2nd temporary file" << std::endl;
             return EXIT_FAILURE;
         }
-        tmp.close();
-        boost::filesystem::remove(filePath2);
+        tmp2.close();
+        boost::filesystem::remove(tmp2.filePath);
 
         std::stringstream cmd;
         std::string path = argv[0];
@@ -210,48 +187,34 @@ int main(int argc, char* argv[])
 #endif
 
         cmd << "-to 44100 ";
-        cmd << "\"" << filePath << "\" ";
-        cmd << "\"" << filePath2 << "\" ";
+        cmd << "\"" << tmp.filePath << "\" ";
+        cmd << "\"" << tmp2.filePath << "\" ";
 
-        if(system(cmd.str().c_str()) != 0)
+        std::string convertedFilepath = tmp2.filePath;
+        if(bnw::system(cmd.str().c_str()) != 0)
         {
-            std::cerr << "Resampling failed, using original item" << std::endl;
-            if(boost::filesystem::exists(filePath2))
-                boost::filesystem::remove(filePath2);
-            filePath2 = filePath;
-        } else
-            boost::filesystem::remove(filePath);
-
-        std::ifstream tmp2(filePath2.c_str(), std::ios_base::binary);
-        if(!tmp2)
-        {
-            std::cerr << "Can't open temporary file \"" << filePath2 << "\" for reading" << std::endl;
-            boost::filesystem::remove(filePath2);
-            return EXIT_FAILURE;
-        }
-        tmp2.seekg(0, std::ios_base::end);
-        unsigned length = static_cast<unsigned>(tmp2.tellg());
-        tmp2.seekg(0, std::ios_base::beg);
-
-        libsiedler2::ArchivItem_Sound_Wave result;
-        if(result.load(tmp2, length) != 0)
-        {
-            std::cerr << "Can't read from temporary file \"" << filePath2 << "\"" << std::endl;
-            tmp2.close();
-            boost::filesystem::remove(filePath2);
-            return EXIT_FAILURE;
+            bnw::cerr << "Resampling failed, using original item" << std::endl;
+            convertedFilepath = tmp.filePath;
         }
 
-        tmp2.close();
-        boost::filesystem::remove(filePath2);
-
-        output.pushC(result);
+        libsiedler2::Archiv convArchiv;
+        if(int ec = libsiedler2::Load(convertedFilepath, convArchiv))
+        {
+            bnw::cerr << "Reading converted file \"" << convertedFilepath << "\" failed with " << libsiedler2::getErrorString(ec)
+                      << std::endl;
+            return EXIT_FAILURE;
+        }
+        if(convArchiv.size() != 1 || convArchiv[0]->getBobType() != libsiedler2::BOBTYPE_SOUND)
+        {
+            bnw::cerr << "Unknown error eading converted file \"" << convertedFilepath << "\"" << std::endl;
+            return EXIT_FAILURE;
+        }
+        output.push(convArchiv.release(0));
     }
-    in.close();
 
     if(libsiedler2::loader::WriteLST(to, output) != 0)
     {
-        std::cerr << "Conversion failed - was not able to save results to \"" << to << "\"" << std::endl;
+        bnw::cerr << "Conversion failed - was not able to save results to \"" << to << "\"" << std::endl;
         return EXIT_FAILURE;
     }
 
