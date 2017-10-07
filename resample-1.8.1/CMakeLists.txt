@@ -3,6 +3,9 @@ PROJECT(resample-1.8.1)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 CMAKE_POLICY(SET CMP0003 NEW)
+IF(NOT CMAKE_VERSION VERSION_LESS 3.1)
+    CMAKE_POLICY(SET CMP0053 NEW)
+endif()
 
 ################################################################################
 
