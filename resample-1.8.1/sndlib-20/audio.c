@@ -1307,28 +1307,18 @@ static void describe_audio_state_1(void)
 
 #if (MUS_HAVE_USR_LIB_OSS)
   #include "/usr/lib/oss/include/sys/soundcard.h"
+#elif (MUS_HAVE_USR_LOCAL_LIB_OSS)
+  #include "/usr/local/lib/oss/include/sys/soundcard.h"
+#elif (MUS_HAVE_OPT_OSS)
+  #include "/opt/oss/include/sys/soundcard.h"
+#elif (MUS_HAVE_VAR_LIB_OSS)
+  #include "/var/lib/oss/include/sys/soundcard.h"
+#elif defined(HAVE_SYS_SOUNDCARD_H) || defined(MUS_LINUX)
+  #include <sys/soundcard.h>
+#elif defined(HAVE_MACHINE_SOUNDCARD_H)
+  #include <machine/soundcard.h>
 #else
-  #if (MUS_HAVE_USR_LOCAL_LIB_OSS)
-    #include "/usr/local/lib/oss/include/sys/soundcard.h"
-  #else
-    #if (MUS_HAVE_OPT_OSS)
-      #include "/opt/oss/include/sys/soundcard.h"
-    #else
-      #if (MUS_HAVE_VAR_LIB_OSS)
-        #include "/var/lib/oss/include/sys/soundcard.h"
-      #else
-        #if defined(HAVE_SYS_SOUNDCARD_H) || defined(MUS_LINUX)
-          #include <sys/soundcard.h>
-        #else
-          #if defined(HAVE_MACHINE_SOUNDCARD_H)
-            #include <machine/soundcard.h>
-          #else
-            #include <soundcard.h>
-          #endif
-        #endif
-      #endif
-    #endif
-  #endif
+  #include <soundcard.h>
 #endif
 
 #if ((SOUND_VERSION > 360) && (defined(OSS_SYSINFO)))
