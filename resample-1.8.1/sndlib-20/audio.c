@@ -95,12 +95,6 @@
   #include <sys/sam9407.h>
 #endif
 
-#ifdef MUS_MAC_OSX
-#include <CoreServices/CoreServices.h>
-#include <CoreAudio/CoreAudio.h>
-/* these pull in stdbool.h apparently, so they have to precede sndlib.h */
-#endif
-
 #include "_sndlib.h"
 #include "sndlib-strings.h"
 
@@ -5292,7 +5286,7 @@ int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
 	      __FILE__, __LINE__, 
 	      info.record.channels, chans);
 
-  info.record.precision = bits; /* was play, changed 10-Jul-03 thanks to Jürgen Keil */
+  info.record.precision = bits; /* was play, changed 10-Jul-03 thanks to JÃ¼rgen Keil */
   info.record.encoding = encode;
   err = ioctl(audio_fd, AUDIO_SETINFO, &info); 
   if (err == -1) 
