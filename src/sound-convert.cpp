@@ -18,7 +18,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Systemheader
 
-#include "tokenizer.hpp"
 #include "libsiedler2/Archiv.h"
 #include "libsiedler2/ArchivItem.h"
 #include "libsiedler2/ArchivItem_Sound_Wave.h"
@@ -27,6 +26,8 @@
 #include "libsiedler2/libsiedler2.h"
 #include "libsiedler2/prototypen.h"
 #include "libutil/LocaleHelper.h"
+#include "libutil/StringConversion.h"
+#include "libutil/Tokenizer.h"
 #include "libutil/tmpFile.h"
 #include <boost/endian/conversion.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -101,36 +102,50 @@ int main(int argc, char* argv[])
         if(line[0] == '#')
             continue;
 
-        tokenizer token(line);
+        Tokenizer token(line);
 
-        std::string number = token.next();
-        int nr = atoi(number.c_str());
-        int32_t frequency = atoi(token.next().c_str());
-
-        /*if(frequency == 0)
-        {
-            bnw::cerr << "Script error on line  \"%d\": frequency unparseable or null\n", linenr, nr, frequency);
-            return EXIT_FAILURE;
-        }*/
-
-        if(number == "copy")
-        {
-            bnw::cout << "Copying item " << frequency << " at line " << linenr << "" << std::endl;
-            output.pushC(*input.get(frequency));
-            continue;
-        }
-
-        libsiedler2::ArchivItem* item = input.get(nr);
-        if(frequency == 0 || item == NULL || number == "empty")
+        std::string sNumber = token.next();
+        if(sNumber == "empty")
         {
             bnw::cout << "Inserting empty item at line " << linenr << "" << std::endl;
             output.push(NULL);
             continue;
         }
 
-        if(item->getBobType() != libsiedler2::BOBTYPE_SOUND)
+        int nr;
+        if(!s25util::tryFromStringClassic(sNumber, nr))
+        {
+            bnw::cerr << "Script error on line  " << linenr << ": Cannot parse number '" << sNumber << "'" << std::endl;
+            return EXIT_FAILURE;
+        }
+        libsiedler2::ArchivItem* item = input.get(nr);
+
+        std::string sFrequency = token.next();
+        // Allow empty items only on copy
+        if((!item && sFrequency != "copy") || (item && item->getBobType() != libsiedler2::BOBTYPE_SOUND))
         {
             bnw::cerr << "Script error on line " << linenr << ": item " << nr << " does not exist or is not a sound" << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        if(sFrequency == "copy")
+        {
+            if(item)
+            {
+                bnw::cout << "Copying item " << nr << " at line " << linenr << "" << std::endl;
+                output.pushC(*item);
+            } else
+            {
+                bnw::cout << "Copying empty item " << nr << " at line " << linenr << "" << std::endl;
+                output.push(item);
+            }
+            continue;
+        }
+
+        uint32_t frequency;
+        if(!s25util::tryFromStringClassic(sFrequency, frequency) || frequency == 0u)
+        {
+            bnw::cerr << "Script error on line  " << linenr << ": Cannot parse frequency '" << sFrequency << "'" << std::endl;
             return EXIT_FAILURE;
         }
 
