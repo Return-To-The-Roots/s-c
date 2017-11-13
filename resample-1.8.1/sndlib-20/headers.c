@@ -2679,12 +2679,11 @@ static int read_8svx_header(const char *filename, int chan, bool bytewise)
 static int read_voc_header(const char *filename, int chan)
 {
   off_t curbase;
-  int type, len, voc_extended, bits, code;
+  int type, len, bits, code;
   bool happy;
   data_format = MUS_UBYTE;
   chans = 1;
   happy = true;
-  voc_extended = 0;
   true_file_length = SEEK_FILE_LENGTH(chan);
   curbase = mus_char_to_lshort((unsigned char *)(hdrbuf + 20));
   if (true_file_length < curbase)
@@ -2699,14 +2698,11 @@ static int read_voc_header(const char *filename, int chan)
 	{
 	  data_size = len - 1; /* was -3 */
 	  data_location = curbase + 6;
-	  if (voc_extended == 0) 
-	    {
 	      srate = (int)(1000000.0 / (256 - ((int)(hdrbuf[4] & 0xff))));
 	      original_data_format = hdrbuf[5];
 	      if (hdrbuf[5] == 0) 
 		data_format = MUS_UBYTE; 
 	      else data_format = MUS_UNKNOWN;
-	    }
 	  happy = false;
 	}
       else

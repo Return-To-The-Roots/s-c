@@ -1339,15 +1339,15 @@ char *mus_getcwd(void)
   char *pwd = NULL, *res = NULL;
 #if HAVE_PATHCONF
   path_max = pathconf("/", _PC_PATH_MAX);
+  if(path_max < 1024)
 #endif
-  if (path_max < 1024)
-    {
-#if defined(PATH_MAX)
+  {
+#if defined(PATH_MAX) && PATH_MAX >= 1024
       path_max = PATH_MAX;
+#else
+      path_max = 1024;
 #endif
-      if (path_max < 1024) 
-	path_max = 1024;
-    }
+  }
 #if HAVE_GETCWD
   for (i = path_max;; i *= 2)
     {
