@@ -10,17 +10,17 @@
 #include "stdefs.h"
 
 /* Conversion constants */
-#define Nhc       8
-#define Na        7
-#define Np       (Nhc+Na)
-#define Npc      (1<<Nhc)
-#define Amask    ((1<<Na)-1)
-#define Pmask    ((1<<Np)-1)
-#define Nh       16
-#define Nb       16
-#define Nhxn     14
-#define Nhg      (Nh-Nhxn)
-#define NLpScl   13
+#define Nhc 8
+#define Na 7
+#define Np (Nhc + Na)
+#define Npc (1 << Nhc)
+#define Amask ((1 << Na) - 1)
+#define Pmask ((1 << Np) - 1)
+#define Nh 16
+#define Nb 16
+#define Nhxn 14
+#define Nhg (Nh - Nhxn)
+#define NLpScl 13
 
 /* Description of constants:
  *
@@ -69,18 +69,16 @@
  *    Nb+Nhg+NLpScl < 32.
  */
 
-
-int resample(           /* number of output sample returned */
-    double factor,      /* factor = Sndout/Sndin */
-    int    infd,        /* input and output file descriptors */
-    int    outfd,
-    int inCount,        /* number of input samples to convert */
-    int outCount,       /* number of output samples to compute */
-    int nChans,         /* number of sound channels (1 or 2) */
-    BOOL interpFilt,        /* TRUE means interpolate filter coeffs */
-    int fastMode,       /* 0 = highest quality, slowest speed */
-    BOOL largeFilter,       /* TRUE means use 65-tap FIR filter */
-    char* filterFile        /* NULL for internal filter, else filename */
+int resample(                        /* number of output sample returned */
+             double factor,          /* factor = Sndout/Sndin */
+             int infd,               /* input and output file descriptors */
+             int outfd, int inCount, /* number of input samples to convert */
+             int outCount,           /* number of output samples to compute */
+             int nChans,             /* number of sound channels (1 or 2) */
+             BOOL interpFilt,        /* TRUE means interpolate filter coeffs */
+             int fastMode,           /* 0 = highest quality, slowest speed */
+             BOOL largeFilter,       /* TRUE means use 65-tap FIR filter */
+             char* filterFile        /* NULL for internal filter, else filename */
 );
 
 //#define MUS_SAMPLE_TYPE mus_sample_t; // more incompatible changes to sndlib

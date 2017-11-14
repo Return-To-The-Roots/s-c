@@ -3,7 +3,7 @@
 #define _STDEFS_H
 
 #ifndef TRUE
-#define TRUE  1
+#define TRUE 1
 #endif
 
 #ifndef FALSE
@@ -18,32 +18,32 @@
 #define PI2 (6.28318530717958465692)
 #endif
 
-#define D2R (0.01745329348)          /* (2*pi)/360 */
-#define R2D (57.29577951)            /* 360/(2*pi) */
+#define D2R (0.01745329348) /* (2*pi)/360 */
+#define R2D (57.29577951)   /* 360/(2*pi) */
 
 #ifndef MAX
-#define MAX(x,y) ((x)>(y) ?(x):(y))
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
 #endif
 #ifndef MIN
-#define MIN(x,y) ((x)<(y) ?(x):(y))
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
 #endif
 
 #ifndef ABS
-#define ABS(x)   ((x)<0   ?(-(x)):(x))
+#define ABS(x) ((x) < 0 ? (-(x)) : (x))
 #endif
 
 #ifndef SGN
-#define SGN(x)   ((x)<0   ?(-1):((x)==0?(0):(1)))
+#define SGN(x) ((x) < 0 ? (-1) : ((x) == 0 ? (0) : (1)))
 #endif
 
-typedef char           BOOL; //-V677
-typedef short          HWORD;
+typedef char BOOL; //-V677
+typedef short HWORD;
 typedef unsigned short UHWORD;
-typedef int            WORD; //-V677
-typedef unsigned int   UWORD;
+typedef int WORD; //-V677
+typedef unsigned int UWORD;
 
-#define MUS_SAMPLE_TYPE_TO_HWORD(x) ((HWORD)((x)>>(MUS_SAMPLE_BITS-16)))
-#define HWORD_TO_MUS_SAMPLE_TYPE(x) ((mus_sample_t)((x)<<(MUS_SAMPLE_BITS-16)))
+#define MUS_SAMPLE_TYPE_TO_HWORD(x) ((HWORD)((x) >> (MUS_SAMPLE_BITS - 16)))
+#define HWORD_TO_MUS_SAMPLE_TYPE(x) ((mus_sample_t)((x) << (MUS_SAMPLE_BITS - 16)))
 
 #define MAX_HWORD (32767)
 #define MIN_HWORD (-32768)

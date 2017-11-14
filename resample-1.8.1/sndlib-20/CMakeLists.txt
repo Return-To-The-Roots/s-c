@@ -44,5 +44,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 ADD_LIBRARY(resample-sndlib-20 STATIC audio.c sound.c io.c headers.c)
-		
-#################################################################################
+
+FILE(GLOB SRC_FILES *.c *.h)
+if(ClangFormat_FOUND)
+    add_clangFormat_files(${SRC_FILES})
+endif()

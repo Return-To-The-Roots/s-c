@@ -2,15 +2,15 @@
 
    An interface to the low-level sndlib functions contained in sndlib/headers.c
    and sndlib/io.c, designed for use by the resample program.
-   (sndlibextra.c is a stripped-down version of sndlibsupport.c in RTcmix.) 
+   (sndlibextra.c is a stripped-down version of sndlibsupport.c in RTcmix.)
 
    - John Gibson (jgg9c@virginia.edu)
 */
+#include "sndlibextra.h"
 #include <assert.h>
 #include <string.h>
-#include "sndlibextra.h"
 
-/* #define NDEBUG */     /* define to disable asserts */
+/* #define NDEBUG */ /* define to disable asserts */
 
 /* ---------------------------------------------------- sndlib_create --- */
 /* Creates a new file and writes a header with the given characteristics.
@@ -27,66 +27,65 @@
    position pointer at the end of the header.
    On failure, returns -1. Caller can check errno then.
 */
-int
-sndlib_create(char *sfname, /* file name */
-	      int type, /* file type, e.g. AIFF */
-	      int format, /* data format, e.g., MU-LAW */
-	      int srate, /* sampling rate in Hz */
-	      int chans, /* 1 for mono, 2 for stereo */
-	      char *comment)
+int sndlib_create(char* sfname, /* file name */
+                  int type,     /* file type, e.g. AIFF */
+                  int format,   /* data format, e.g., MU-LAW */
+                  int srate,    /* sampling rate in Hz */
+                  int chans,    /* 1 for mono, 2 for stereo */
+                  char* comment)
 {
-   int  fd;
-   assert(sfname != NULL && strlen(sfname) <= FILENAME_MAX);
-   mus_header_initialize(); // make sure relevant parts of sndlib are initialized
-   //resample-1.8: sndlib_write_header(fd, 0, type, format, srate, chans, comment, &loc)
-   //resample-1.8: mus_file_open_descriptors(fd, format, mus_header_data_format_to_bytes_per_sample(),loc);
-   // int mus_file_open_descriptors(int tfd, const char *arg, int df, int ds, off_t dl, int dc, int dt);
-   fd = mus_sound_open_output(sfname, srate, chans, format, type, "created by resample");
-   return fd;
+    int fd;
+    assert(sfname != NULL && strlen(sfname) <= FILENAME_MAX);
+    mus_header_initialize(); // make sure relevant parts of sndlib are initialized
+    // resample-1.8: sndlib_write_header(fd, 0, type, format, srate, chans, comment, &loc)
+    // resample-1.8: mus_file_open_descriptors(fd, format, mus_header_data_format_to_bytes_per_sample(),loc);
+    // int mus_file_open_descriptors(int tfd, const char *arg, int df, int ds, off_t dl, int dc, int dt);
+    fd = mus_sound_open_output(sfname, srate, chans, format, type, "created by resample");
+    return fd;
 }
 
-void *calloc(size_t nmemb, size_t size);
+void* calloc(size_t nmemb, size_t size);
 
 /* ------------------------------------------ sndlib_allocate_buffers --- */
 /* Allocate the multi-dimensional array required by sndlib I/O functions.
    Returns an array of <nchans> arrays of <nframes> integers. The memory
    is cleared. If the return value is NULL, check errno.
 */
-int **
-sndlib_allocate_buffers(int nchans, int nframes)
+int** sndlib_allocate_buffers(int nchans, int nframes)
 {
-   int **bufs, n;
+    int **bufs, n;
 
-   assert(nchans > 0 && nframes > 0);
+    assert(nchans > 0 && nframes > 0);
 
-   bufs = (int **)calloc(nchans, sizeof(int *));
-   if (bufs == NULL)
-      return NULL;
+    bufs = (int**)calloc(nchans, sizeof(int*));
+    if(bufs == NULL)
+        return NULL;
 
-   for (n = 0; n < nchans; n++) {
-      bufs[n] = (int *)calloc(nframes, sizeof(int));
-      if (bufs[n] == NULL) {
-         sndlib_free_buffers(bufs, nchans);
-         return NULL;
-      }
-   }
+    for(n = 0; n < nchans; n++)
+    {
+        bufs[n] = (int*)calloc(nframes, sizeof(int));
+        if(bufs[n] == NULL)
+        {
+            sndlib_free_buffers(bufs, nchans);
+            return NULL;
+        }
+    }
 
-   return bufs;
+    return bufs;
 }
 
-void free(void *ptr);
+void free(void* ptr);
 
 /* ---------------------------------------------- sndlib_free_buffers --- */
 /* Free the multi-dimensional array <bufs> with <nchans> elements.
-*/
-void
-sndlib_free_buffers(int **bufs, int nchans)
+ */
+void sndlib_free_buffers(int** bufs, int nchans)
 {
-   int n;
+    int n;
 
-   assert(bufs != NULL);
+    assert(bufs != NULL);
 
-   for (n = 0; n < nchans; n++)
-      free(bufs[n]);
-   free(bufs);
+    for(n = 0; n < nchans; n++)
+        free(bufs[n]);
+    free(bufs);
 }

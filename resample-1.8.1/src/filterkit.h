@@ -1,6 +1,6 @@
 /*:filterkit.h */
 
-#include    "stdefs.h"
+#include "stdefs.h"
 
 /*
  * LpFilter() - Calculates the filter coeffs for a Kaiser-windowed low-pass
@@ -82,8 +82,7 @@ int writeFilter(HWORD Imp[], HWORD ImpD[], UHWORD LpScl, UHWORD Nmult, UHWORD Nw
  *   1 - could not open file
  */
 
-int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD* LpScl, UHWORD Nwing,
-               double Froll, double Beta);
+int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD* LpScl, UHWORD Nwing, double Froll, double Beta);
 /*
  * makeFilter
  * ERROR return codes:
@@ -94,9 +93,7 @@ int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD* LpScl, UHWORD Nwing,
  *    4 - LpScl will not fit in 16-bits
  */
 
-int readFilter(char* filterFile,
-               HWORD** ImpP, HWORD** ImpDP, UHWORD* LpScl,
-               UHWORD* Nmult, UHWORD* Nwing);
+int readFilter(char* filterFile, HWORD** ImpP, HWORD** ImpDP, UHWORD* LpScl, UHWORD* Nmult, UHWORD* Nwing);
 /*
  * Read-in a filter
  *    Filter file format:
@@ -118,11 +115,9 @@ int readFilter(char* filterFile,
  *    3 - invalid Length in file
  */
 
-WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp,
-              HWORD* Xp, HWORD Inc, HWORD Ph);
+WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, HWORD Inc, HWORD Ph);
 
-WORD FilterUD(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp,
-              HWORD* Xp, HWORD Ph, HWORD Inc, UHWORD dhb);
+WORD FilterUD(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, HWORD Ph, HWORD Inc, UHWORD dhb);
 
 int initZerox(UHWORD tempNmult);
 /*
@@ -155,5 +150,4 @@ double GetDouble(char* title, double deflt, char* help);
 
 char* GetString(char* prompt, char* deflt, char* help);
 
-#define GetUHWORD(x,y,z) GetUShort(x,y,z)
-
+#define GetUHWORD(x, y, z) GetUShort(x, y, z)
