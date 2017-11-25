@@ -64,10 +64,10 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    std::cout << "Starting samplerate conversion\n" << std::endl;
-    std::cout << "Input file: \"" << from << "\"" << std::endl;
-    std::cout << "Output file: \"" << to << "\"" << std::endl;
-    std::cout << "using Script: \"" << script << "\"\n" << std::endl;
+    bnw::cout << "Starting samplerate conversion\n" << std::endl;
+    bnw::cout << "Input file: \"" << from << "\"" << std::endl;
+    bnw::cout << "Output file: \"" << to << "\"" << std::endl;
+    bnw::cout << "using Script: \"" << script << "\"\n" << std::endl;
 
     libsiedler2::Archiv input, output;
     if(int ec = libsiedler2::Load(from, input))
@@ -101,6 +101,8 @@ int main(int argc, char* argv[])
 
         if(line[0] == '#')
             continue;
+        if(line[line.size() - 1] == '\r')
+            line = line.substr(0, line.size() - 1);
 
         Tokenizer token(line);
 
