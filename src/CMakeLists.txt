@@ -4,7 +4,7 @@ ADD_EXECUTABLE(sound-convert ${SRC_FILES})
 
 TARGET_LINK_LIBRARIES(sound-convert siedler2 s25util ${Boost_LIBRARIES} nowide-static)
 
-INSTALL(TARGETS sound-convert DESTINATION ${RTTR_BINDIR}/RTTR)
+INSTALL(TARGETS sound-convert DESTINATION ${RTTR_EXTRA_BINDIR})
 if(ClangFormat_FOUND)
     add_clangFormat_files(${SRC_FILES})
 endif()
