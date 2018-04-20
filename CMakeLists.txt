@@ -6,7 +6,7 @@ CMAKE_POLICY(SET CMP0003 NEW)
 
 ################################################################################
 
-SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 # ensure out of source build
 INCLUDE(MacroEnsureOutOfSourceBuild)
