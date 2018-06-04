@@ -1130,6 +1130,8 @@ int mus_sound_set_maxamps(const char* ifile, int chans, mus_sample_t* vals, off_
         } else
         {
             ichans = mus_sound_chans(ifile);
+            if(ichans == MUS_ERROR)
+                return MUS_ERROR;
             sf->maxamps = (mus_sample_t*)CALLOC(ichans, sizeof(mus_sample_t));
             sf->maxtimes = (off_t*)CALLOC(ichans, sizeof(off_t));
             if(ichans > chans)
@@ -1153,7 +1155,7 @@ int mus_file_to_array(const char* filename, int chan, int start, int samples, mu
     if(ifd == MUS_ERROR)
         return (MUS_ERROR);
     chans = mus_sound_chans(filename);
-    if(chan >= chans)
+    if(chans == MUS_ERROR || chan >= chans)
     {
         mus_sound_close_input(ifd);
         return (mus_error(MUS_NO_SUCH_CHANNEL, "mus_file_to_array can't read %s channel %d (file has %d chans)", filename, chan, chans));
