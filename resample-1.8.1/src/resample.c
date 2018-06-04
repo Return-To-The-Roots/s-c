@@ -36,7 +36,7 @@ Report bugs to <bug-resample@w3k.org>.\n\n\
 
 static int trace = 1; /* controls verbosity of output */
 
-static char comment[256] = "";
+static char comment[1024] = "";
 
 static void fail(char* s)
 {
