@@ -10,7 +10,7 @@ endif()
 ################################################################################
 
 IF (NOT MSVC)
-	ADD_FLAGS(CMAKE_C_FLAGS "-std=c99")
+	add_compile_options("-std=c99")
 ELSE (NOT MSVC)
 	ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 	ADD_DEFINITIONS(/W2)
