@@ -27,10 +27,11 @@
 #include "libsiedler2/prototypen.h"
 #include "libutil/LocaleHelper.h"
 #include "libutil/StringConversion.h"
+#include "libutil/System.h"
 #include "libutil/Tokenizer.h"
 #include "libutil/tmpFile.h"
 #include <boost/endian/conversion.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/nowide/args.hpp>
 #include <boost/nowide/fstream.hpp>
 #include <boost/nowide/iostream.hpp>
@@ -42,6 +43,7 @@
 #include <string>
 #include <vector>
 
+namespace bfs = boost::filesystem;
 namespace bnw = boost::nowide;
 namespace po = boost::program_options;
 
@@ -68,6 +70,16 @@ int main(int argc, char* argv[])
     bnw::cout << "Input file: \"" << from << "\"" << std::endl;
     bnw::cout << "Output file: \"" << to << "\"" << std::endl;
     bnw::cout << "using Script: \"" << script << "\"\n" << std::endl;
+
+    bfs::path resampleCommand = bfs::path(argv[0]).parent_path() / "s-c_resample";
+#ifdef _WIN32
+    resampleCommand.replace_extension(".exe");
+#endif
+    if(!bfs::exists(resampleCommand))
+    {
+        bnw::cerr << "Did not found resample utility at " << resampleCommand << std::endl;
+        return EXIT_FAILURE;
+    }
 
     libsiedler2::Archiv input, output;
     if(int ec = libsiedler2::Load(from, input))
@@ -192,23 +204,13 @@ int main(int argc, char* argv[])
         tmp2.close();
         boost::filesystem::remove(tmp2.filePath);
 
-        std::stringstream cmd;
-        std::string path = argv[0];
-        size_t pos = path.find_last_of("/\\");
-        cmd << path.substr(0, pos);
-
-#ifdef _WIN32
-        cmd << "\\s-c_resample.exe ";
-#else
-        cmd << "/s-c_resample ";
-#endif
-
-        cmd << "-to 44100 ";
-        cmd << "\"" << tmp.filePath << "\" ";
-        cmd << "\"" << tmp2.filePath << "\" ";
+        std::stringstream sArguments;
+        sArguments << "-to 44100 ";
+        sArguments << "\"" << tmp.filePath << "\" ";
+        sArguments << "\"" << tmp2.filePath << "\" ";
 
         std::string convertedFilepath = tmp2.filePath;
-        if(bnw::system(cmd.str().c_str()) != 0)
+        if(!System::execute(resampleCommand, sArguments.str()))
         {
             bnw::cerr << "Resampling failed, using original item" << std::endl;
             convertedFilepath = tmp.filePath;
