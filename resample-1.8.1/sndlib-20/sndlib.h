@@ -35,6 +35,8 @@
 #endif
 #endif
 
+#define MUS_UNUSED(x) (void)(x)
+
 #if(!SNDLIB_USE_FLOATS)
 #define mus_sample_t int
 #ifndef MUS_SAMPLE_BITS

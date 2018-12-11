@@ -79,42 +79,42 @@ static void getstr(char* prompt, char* defaultAnswer, char* answer, int answerBu
     }
 }
 
-    /* LpFilter()
-     *
-     * reference: "Digital Filters, 2nd edition"
-     *            R.W. Hamming, pp. 178-179
-     *
-     * Izero() computes the 0th order modified bessel function of the first kind.
-     *    (Needed to compute Kaiser window).
-     *
-     * LpFilter() computes the coeffs of a Kaiser-windowed low pass filter with
-     *    the following characteristics:
-     *
-     *       c[]  = array in which to store computed coeffs
-     *       frq  = roll-off frequency of filter
-     *       N    = Half the window length in number of coeffs
-     *       Beta = parameter of Kaiser window
-     *       Num  = number of coeffs before 1/frq
-     *
-     * Beta trades the rejection of the lowpass filter against the transition
-     *    width from passband to stopband.  Larger Beta means a slower
-     *    transition and greater stopband rejection.  See Rabiner and Gold
-     *    (Theory and Application of DSP) under Kaiser windows for more about
-     *    Beta.  The following table from Rabiner and Gold gives some feel
-     *    for the effect of Beta:
-     *
-     * All ripples in dB, width of transition band = D*N where N = window length
-     *
-     *               BETA    D       PB RIP   SB RIP
-     *               2.120   1.50  +-0.27      -30
-     *               3.384   2.23    0.0864    -40
-     *               4.538   2.93    0.0274    -50
-     *               5.658   3.62    0.00868   -60
-     *               6.764   4.32    0.00275   -70
-     *               7.865   5.0     0.000868  -80
-     *               8.960   5.7     0.000275  -90
-     *               10.056  6.4     0.000087  -100
-     */
+/* LpFilter()
+ *
+ * reference: "Digital Filters, 2nd edition"
+ *            R.W. Hamming, pp. 178-179
+ *
+ * Izero() computes the 0th order modified bessel function of the first kind.
+ *    (Needed to compute Kaiser window).
+ *
+ * LpFilter() computes the coeffs of a Kaiser-windowed low pass filter with
+ *    the following characteristics:
+ *
+ *       c[]  = array in which to store computed coeffs
+ *       frq  = roll-off frequency of filter
+ *       N    = Half the window length in number of coeffs
+ *       Beta = parameter of Kaiser window
+ *       Num  = number of coeffs before 1/frq
+ *
+ * Beta trades the rejection of the lowpass filter against the transition
+ *    width from passband to stopband.  Larger Beta means a slower
+ *    transition and greater stopband rejection.  See Rabiner and Gold
+ *    (Theory and Application of DSP) under Kaiser windows for more about
+ *    Beta.  The following table from Rabiner and Gold gives some feel
+ *    for the effect of Beta:
+ *
+ * All ripples in dB, width of transition band = D*N where N = window length
+ *
+ *               BETA    D       PB RIP   SB RIP
+ *               2.120   1.50  +-0.27      -30
+ *               3.384   2.23    0.0864    -40
+ *               4.538   2.93    0.0274    -50
+ *               5.658   3.62    0.00868   -60
+ *               6.764   4.32    0.00275   -70
+ *               7.865   5.0     0.000868  -80
+ *               8.960   5.7     0.000275  -90
+ *               10.056  6.4     0.000087  -100
+ */
 
 #define IzeroEPSILON 1E-21 /* Max error acceptable in Izero */
 
@@ -207,14 +207,14 @@ int writeFilter(HWORD Imp[], HWORD ImpD[], UHWORD LpScl, UHWORD Nmult, UHWORD Nw
     return (0);
 }
 
-    /* ERROR return codes:
-     *    0 - no error
-     *    1 - Nwing too large (Nwing is > MAXNWING)
-     *    2 - Froll is not in interval [0:1)
-     *    3 - Beta is < 1.0
-     *    4 - LpScl will not fit in 16-bits
-     *
-     * Made following global to avoid stack problems in Sun3 compilation: */
+/* ERROR return codes:
+ *    0 - no error
+ *    1 - Nwing too large (Nwing is > MAXNWING)
+ *    2 - Froll is not in interval [0:1)
+ *    3 - Beta is < 1.0
+ *    4 - LpScl will not fit in 16-bits
+ *
+ * Made following global to avoid stack problems in Sun3 compilation: */
 
 #define MAXNWING 8192
 static double ImpR[MAXNWING];
@@ -318,19 +318,22 @@ int readFilter(char* filterFile, HWORD** ImpP, HWORD** ImpDP, UHWORD* LpScl, UHW
         return (1);
 
     if(fscanf(fp, "ScaleFactor ") != 0)
-        ;
+    {
+    }
     if(1 != fscanf(fp, "%d", &temp))
         return (2);
     *LpScl = temp;
 
     if(fscanf(fp, "\nLength ") != 0)
-        ;
+    {
+    }
     if(1 != fscanf(fp, "%d", &temp))
         return (3);
     *Nwing = temp;
 
     if(fscanf(fp, "\nNmult ") != 0)
-        ;
+    {
+    }
     if(1 != fscanf(fp, "%d", &temp))
         return (4);
     *Nmult = temp;
@@ -338,22 +341,26 @@ int readFilter(char* filterFile, HWORD** ImpP, HWORD** ImpDP, UHWORD* LpScl, UHW
     Imp = (HWORD*)malloc(*Nwing * sizeof(HWORD));
 
     if(fscanf(fp, "\nCoeffs:\n") != 0)
-        ;
+    {
+    }
     for(i = 0; i < *Nwing; i++)
     { /* Get array of 16-bit filter coefficients */
         if(fscanf(fp, "%d\n", &temp) != 0)
-            ;
+        {
+        }
         Imp[i] = temp; //-V522
     }
 
     ImpD = (HWORD*)malloc(*Nwing * sizeof(HWORD));
 
     if(fscanf(fp, "\nDifferences:\n") != 0)
-        ;
+    {
+    }
     for(i = 0; i < *Nwing; i++)
     { /* Get array of 16bit filter coeff differences */
         if(fscanf(fp, "%d\n", &temp) != 0)
-            ;
+        {
+        }
         ImpD[i] = temp; //-V522
     }
 

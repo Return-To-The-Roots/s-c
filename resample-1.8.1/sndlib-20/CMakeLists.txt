@@ -1,11 +1,11 @@
 
 IF(WIN32 OR CYGWIN)
 	SET(MUS_WINDOZE TRUE)
-ELSEIF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 	SET(MUS_LINUX TRUE)
 ELSEIF(APPLE)
 	SET(MUS_MAC_OSX TRUE)
-ELSEIF(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 	SET(MUS_OSS TRUE)
 ELSE()
 	MESSAGE(FATAL_ERROR "Unknown system: ${CMAKE_SYSTEM_NAME}")
@@ -18,10 +18,6 @@ set(HAVE_LIMITS_H 1)
 set(HAVE_STRING_H 1)
 set(HAVE_STDBOOL_H 1)
 set(HAVE_STDINT_H 1)
-#CHECK_INCLUDE_FILE(limits.h HAVE_LIMITS_H)
-#CHECK_INCLUDE_FILE(string.h HAVE_STRING_H)
-#CHECK_INCLUDE_FILE(stdbool.h HAVE_STDBOOL_H)
-#CHECK_INCLUDE_FILE(stdint.h HAVE_STDINT_H)
 
 CHECK_INCLUDE_FILE(fcntl.h HAVE_FCNTL_H)
 CHECK_INCLUDE_FILE(unistd.h HAVE_UNISTD_H)
@@ -37,13 +33,22 @@ CHECK_INCLUDE_FILE(/opt/oss/include/sys/soundcard.h MUS_HAVE_OPT_OSS)
 CHECK_INCLUDE_FILE(/var/lib/oss/include/sys/soundcard.h MUS_HAVE_VAR_LIB_OSS)
 
 CONFIGURE_FILE(mus-config.h.cmake mus-config.h @ONLY)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+add_library(resample-sndlib-20 STATIC audio.c sound.c io.c headers.c)
+target_include_directories(resample-sndlib-20 PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
+include(EnableWarnings)
+enable_warnings(resample-sndlib-20)
+
 # Avoid warning in some GCC versions
-if(CMAKE_COMPILER_IS_GNUCXX)
-	ADD_DEFINITIONS(-Wno-strict-overflow)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	target_compile_options(resample-sndlib-20 PRIVATE -Wno-strict-overflow)
 endif()
 
-ADD_LIBRARY(resample-sndlib-20 STATIC audio.c sound.c io.c headers.c)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  # To many to fix
+	target_compile_options(resample-sndlib-20 PRIVATE -Wno-unused-parameter)
+endif()
 
 FILE(GLOB SRC_FILES *.c *.h)
 if(ClangFormat_FOUND)

@@ -34,6 +34,7 @@ int sndlib_create(char* sfname, /* file name */
                   int chans,    /* 1 for mono, 2 for stereo */
                   char* comment)
 {
+    MUS_UNUSED(comment);
     int fd;
     assert(sfname != NULL && strlen(sfname) <= FILENAME_MAX);
     mus_header_initialize(); // make sure relevant parts of sndlib are initialized
