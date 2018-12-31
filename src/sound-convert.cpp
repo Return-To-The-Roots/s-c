@@ -96,13 +96,12 @@ int main(int argc, char* argv[])
     }
 
     int linenr = 0, emptylines = 0;
-    while(!in.eof())
+    std::string line;
+    while(std::getline(in, line))
     {
-        std::string line;
-        std::getline(in, line);
         ++linenr;
 
-        if(line.length() == 0)
+        if(line.empty())
         {
             ++emptylines;
             if(emptylines > 100)
