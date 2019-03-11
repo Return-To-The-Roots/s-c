@@ -40,22 +40,22 @@
 #   define WORDS_BIGENDIAN 1
 #endif // BYTE_ORDER != LITTLE_ENDIAN
 
-#cmakedefine HAVE_FCNTL_H 1
-#cmakedefine HAVE_LIMITS_H 1
-#cmakedefine HAVE_STRING_H 1
-#cmakedefine HAVE_UNISTD_H 1
-#cmakedefine HAVE_STDBOOL_H 1
-#cmakedefine HAVE_SYS_SOUNDCARD_H 1
-#cmakedefine HAVE_MACHINE_SOUNDCARD_H 1
-#cmakedefine HAVE_SYS_MIXER_H 1
-#cmakedefine MUS_HAVE_USR_LIB_OSS 1
-#cmakedefine MUS_HAVE_USR_LOCAL_LIB_OSS 1
-#cmakedefine MUS_HAVE_OPT_OSS 1
-#cmakedefine MUS_HAVE_VAR_LIB_OSS 1
-#cmakedefine HAVE_LIBC_H 1
-#cmakedefine HAVE_ALSA_ASOUNDLIB_H 1
-#cmakedefine HAVE_BYTESWAP_H 1 
-#cmakedefine HAVE_STDINT_H 1
+#cmakedefine01 HAVE_FCNTL_H
+#cmakedefine01 HAVE_LIMITS_H
+#cmakedefine01 HAVE_STRING_H
+#cmakedefine01 HAVE_UNISTD_H
+#cmakedefine01 HAVE_STDBOOL_H
+#cmakedefine01 HAVE_SYS_SOUNDCARD_H
+#cmakedefine01 HAVE_MACHINE_SOUNDCARD_H
+#cmakedefine01 HAVE_SYS_MIXER_H
+#cmakedefine01 MUS_HAVE_USR_LIB_OSS
+#cmakedefine01 MUS_HAVE_USR_LOCAL_LIB_OSS
+#cmakedefine01 MUS_HAVE_OPT_OSS
+#cmakedefine01 MUS_HAVE_VAR_LIB_OSS
+#cmakedefine01 HAVE_LIBC_H
+#cmakedefine01 HAVE_ALSA_ASOUNDLIB_H
+#cmakedefine01 HAVE_BYTESWAP_H
+#cmakedefine01 HAVE_STDINT_H
 
 #define SIZEOF_OFF_T 8
 #define HAVE_DECL_ISNAN 1
@@ -68,10 +68,10 @@
 #cmakedefine MUS_OPENBSD 1
 #cmakedefine MUS_NETBSD 1
 #cmakedefine MUS_WINDOZE 1
-#cmakedefine HAVE_OSS 1
-#cmakedefine HAVE_ALSA 1
-#cmakedefine HAVE_JACK 1
-#cmakedefine HAVE_SAM_9407 1
+#cmakedefine01 HAVE_OSS
+#cmakedefine01 HAVE_ALSA
+#cmakedefine01 HAVE_JACK
+#cmakedefine01 HAVE_SAM_9407
 #cmakedefine MUS_MAC_OSX 1
 #cmakedefine MUS_ESD 1
 #cmakedefine MUS_HPUX 1

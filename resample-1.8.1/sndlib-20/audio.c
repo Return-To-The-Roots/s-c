@@ -80,7 +80,7 @@
 #endif
 #include <errno.h>
 #include <stdlib.h>
-#if(defined(HAVE_LIBC_H) && (!defined(HAVE_UNISTD_H)))
+#if HAVE_LIBC_H && !HAVE_UNISTD_H
 #include <libc.h>
 #else
 #if(!(defined(_MSC_VER)))
@@ -186,7 +186,7 @@ int device_gains(int ur_dev)
     if((dev == MUS_AUDIO_DAC_FILTER) || (dev == MUS_AUDIO_MIXER))
     {
         err = mus_audio_mixer_read(ur_dev, MUS_AUDIO_CHANNEL, 0, val);
-#ifdef HAVE_ALSA
+#if HAVE_ALSA
         if(err != MUS_NO_ERROR)
             return (0);
 #endif
@@ -534,7 +534,7 @@ int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int requ
 #if 0
   if (device_channels(dev) < chans)                     /* look for some device that can play this file */
     device[line] = find_audio_output(chans);
-  if (device[line] == -1) 
+  if (device[line] == -1)
     RETURN_ERROR_EXIT(MUS_AUDIO_CHANNELS_NOT_AVAILABLE, -1,
 		      mus_format("can't find %d channel device",
 				 chans));
@@ -4154,7 +4154,7 @@ static int alsa_mus_error(int type, char* message)
 }
 
 #if 0
-static void alsa_dump_hardware_params(snd_pcm_hw_params_t *params, const char *msg) 
+static void alsa_dump_hardware_params(snd_pcm_hw_params_t *params, const char *msg)
 {
   snd_output_t *out;
   snd_output_stdio_attach(&out, stderr, 0);
@@ -4162,7 +4162,7 @@ static void alsa_dump_hardware_params(snd_pcm_hw_params_t *params, const char *m
   snd_pcm_hw_params_dump(params, out);
 }
 
-static void alsa_dump_software_params(snd_pcm_sw_params_t *params, const char *msg) 
+static void alsa_dump_software_params(snd_pcm_sw_params_t *params, const char *msg)
 {
   snd_output_t *out;
   snd_output_stdio_attach(&out, stderr, 0);
@@ -8943,13 +8943,13 @@ static int jack_mus_audio_initialize(void)
 
     audio_initialized = true;
 
-#if 0  
+#if 0
 
   /* Locking all future memory shouldn't be that necessary, and might even freeze the machine in certain situations. */
   /* So remove MCL_FUTURE from the mlockall call. (No. We can't do that. It can screw up code using the realtime extension. -Kjetil.*/
   munlockall();
   //mlockall(MCL_CURRENT);
-  
+
   // Instead we just do this: (which is not enough, but maybe better than nothing)
   {
     mlock(sndjack_channels,sizeof(struct SndjackChannel)*sndjack_num_channels_allocated);
@@ -9971,14 +9971,14 @@ static void describe_audio_state_1(void)
       val = ioctl(line, AUDIO_MIXER_DEVINFO, &mdev);
       if (val != 0) break;
       fprintf(stderr,"%d: name: %s ", i, mdev.label.name);
-      fprintf(stderr,"class: %d, type: %d, units: %s, chans: %d, delta: %d\n", 
+      fprintf(stderr,"class: %d, type: %d, units: %s, chans: %d, delta: %d\n",
 	      mdev.mixer_class, mdev.type, mdev.un.v.units.name, mdev.un.v.num_channels, mdev.un.v.delta);
       mx.dev = i;
       ioctl(line, AUDIO_MIXER_READ, &mx);
       switch (mx.type)
 	{
 	case AUDIO_MIXER_CLASS:
-	  fprintf(stderr, "mixer read: class type?\n"); 
+	  fprintf(stderr, "mixer read: class type?\n");
 	  break;
 	case AUDIO_MIXER_ENUM:
 	  fprintf(stderr, "mixer read: enum: %d\n", mx.un.ord);
@@ -9995,7 +9995,7 @@ static void describe_audio_state_1(void)
 	  }
 	  break;
 	default:
-	  fprintf(stderr, "mixer read: unknown type? %d\n", mx.type); 
+	  fprintf(stderr, "mixer read: unknown type? %d\n", mx.type);
 	  break;
 	}
     }

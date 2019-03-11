@@ -31,7 +31,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#if(defined(HAVE_LIBC_H) && (!defined(HAVE_UNISTD_H)))
+#if HAVE_LIBC_H && !HAVE_UNISTD_H
 #include <libc.h>
 #else
 #ifdef _MSC_VER
