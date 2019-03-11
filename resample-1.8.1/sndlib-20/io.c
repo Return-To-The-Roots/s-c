@@ -46,7 +46,7 @@
 #endif
 #include <stdarg.h>
 
-#include "_sndlib.h"
+#include "sndlib.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -430,7 +430,7 @@ void mus_ldouble_to_char(unsigned char* j, double x)
 
 #else
 
-#ifndef MUS_SUN
+#if !MUS_SUN
 #define m_big_endian_short(n) (*((short*)n))
 #define m_big_endian_int(n) (*((int*)n))
 #define m_big_endian_float(n) (*((float*)n))
@@ -1430,7 +1430,7 @@ int fileno(FILE* fp)
 }
 #endif
 
-#if !defined(MUS_WINDOZE) || defined(__CYGWIN__)
+#if !MUS_WINDOZE || defined(__CYGWIN__)
 static int sndlib_strlen(const char* str)
 {
     /* strlen(NULL) -> seg fault! */
@@ -1479,7 +1479,7 @@ char* mus_getcwd(void)
 char* mus_expand_filename(const char* filename)
 {
 /* fill out under-specified library pathnames etc */
-#if defined(MUS_WINDOZE) && (!(defined(__CYGWIN__)))
+#if MUS_WINDOZE && (!(defined(__CYGWIN__)))
     return (strdup(filename));
 #else
     char* file_name_buf = NULL;

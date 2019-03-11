@@ -12,6 +12,7 @@ ELSE()
 ENDIF()
 
 INCLUDE(CheckIncludeFile)
+include (CheckTypeSize)
 
 # We just assume all compilers have this to avoid the checks
 set(HAVE_LIMITS_H 1)
@@ -32,10 +33,13 @@ CHECK_INCLUDE_FILE(/usr/local/lib/oss/include/sys/soundcard.h MUS_HAVE_USR_LOCAL
 CHECK_INCLUDE_FILE(/opt/oss/include/sys/soundcard.h MUS_HAVE_OPT_OSS)
 CHECK_INCLUDE_FILE(/var/lib/oss/include/sys/soundcard.h MUS_HAVE_VAR_LIB_OSS)
 
+CHECK_TYPE_SIZE("off_t" SIZEOF_OFF_T LANGUAGE C)
+CHECK_TYPE_SIZE("long" SIZEOF_LONG LANGUAGE C)
+
 CONFIGURE_FILE(mus-config.h.cmake mus-config.h @ONLY)
 
 add_library(resample-sndlib-20 STATIC audio.c sound.c io.c headers.c)
-target_include_directories(resample-sndlib-20 PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(resample-sndlib-20 PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 include(EnableWarnings)
 enable_warnings(resample-sndlib-20)

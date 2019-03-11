@@ -100,8 +100,8 @@ extern char* strdup(const char* s);
 #endif
 #endif
 
-#include "_sndlib.h"
 #include "sndlib-strings.h"
+#include "sndlib.h"
 
 static bool hdrbuf_is_inited = false;
 

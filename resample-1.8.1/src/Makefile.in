@@ -149,7 +149,7 @@ INCLUDES = -I$(SNDLIB)
 resample_SOURCES = resample.c resamplesubs.c sndlibextra.c filterkit.c \
 	$(SNDLIB)/audio.c $(SNDLIB)/io.c $(SNDLIB)/headers.c $(SNDLIB)/sound.c \
 	resample.h stdefs.h sndlibextra.h filterkit.h smallfilter.h largefilter.h \
-	$(SNDLIB)/sndlib.h $(SNDLIB)/mus-config.h $(SNDLIB)/_sndlib.h $(SNDLIB)/sndlib-strings.h  $(SNDLIB)/configure
+	$(SNDLIB)/sndlib.h $(SNDLIB)/mus-config.h $(SNDLIB)/sndlib.h $(SNDLIB)/sndlib-strings.h  $(SNDLIB)/configure
 
 resample_LDADD = -lm
 windowfilter_SOURCES = windowfilter.c resamplesubs.c sndlibextra.c filterkit.c \
@@ -213,10 +213,10 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-resample$(EXEEXT): $(resample_OBJECTS) $(resample_DEPENDENCIES) 
+resample$(EXEEXT): $(resample_OBJECTS) $(resample_DEPENDENCIES)
 	@rm -f resample$(EXEEXT)
 	$(LINK) $(resample_LDFLAGS) $(resample_OBJECTS) $(resample_LDADD) $(LIBS)
-windowfilter$(EXEEXT): $(windowfilter_OBJECTS) $(windowfilter_DEPENDENCIES) 
+windowfilter$(EXEEXT): $(windowfilter_OBJECTS) $(windowfilter_DEPENDENCIES)
 	@rm -f windowfilter$(EXEEXT)
 	$(LINK) $(windowfilter_LDFLAGS) $(windowfilter_OBJECTS) $(windowfilter_LDADD) $(LIBS)
 

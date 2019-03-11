@@ -11,13 +11,14 @@
 #define HAVE_GETCWD 1
 #define HAVE_STRFTIME 1
 #define HAVE_STRERROR 1
-/*#define HAVE_ACCESS 1 */
+#define HAVE_ACCESS 0
 #define HAVE_VSNPRINTF 1
 #define HAVE_SNPRINTF 1
 #define HAVE_MEMMOVE 1
 #define HAVE_STRDUP 1
 #define HAVE_FILENO 1
 #define HAVE_COMPLEX_TRIG 1
+#define HAVE_PATHCONF 0
 
 #if defined _WIN32 || defined __CYGWIN__
 #       undef LITTLE_ENDIAN
@@ -30,12 +31,22 @@
 #       include <sys/param.h>
 #endif // !_WIN32 && !__CYGWIN__
 
+#if !defined(BYTE_ORDER) && defined(__BYTE_ORDER)
+#define BYTE_ORDER __BYTE_ORDER
+#ifndef LITTLE_ENDIAN
+#define LITTLE_ENDIAN __LITTLE_ENDIAN
+#endif /* LITTLE_ENDIAN */
+#ifndef BIG_ENDIAN
+#define BIG_ENDIAN __LITTLE_ENDIAN
+#endif /* BIG_ENDIAN */
+#endif /* BYTE_ORDER */
+
 #if BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN
 #       error "Sorry your Byteorder is not supported by this Library"
 #endif // BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN
 
 #if BYTE_ORDER == LITTLE_ENDIAN
-#   undef WORDS_BIGENDIAN
+#   define WORDS_BIGENDIAN 0
 #else
 #   define WORDS_BIGENDIAN 1
 #endif // BYTE_ORDER != LITTLE_ENDIAN
@@ -57,29 +68,30 @@
 #cmakedefine01 HAVE_BYTESWAP_H
 #cmakedefine01 HAVE_STDINT_H
 
-#define SIZEOF_OFF_T 8
+#define SIZEOF_OFF_T @SIZEOF_OFF_T@
+#define SIZEOF_LONG @SIZEOF_LONG@
 #define HAVE_DECL_ISNAN 1
 #define HAVE_DECL_ISINF 1
 
 #cmakedefine MUS_LINUX 1
 #cmakedefine MUS_SGI 1
 #cmakedefine MUS_ALPHA 1
-#cmakedefine MUS_SUN 1
+#cmakedefine01 MUS_SUN
 #cmakedefine MUS_OPENBSD 1
-#cmakedefine MUS_NETBSD 1
-#cmakedefine MUS_WINDOZE 1
+#cmakedefine01 MUS_NETBSD
+#cmakedefine01 MUS_WINDOZE
 #cmakedefine01 HAVE_OSS
 #cmakedefine01 HAVE_ALSA
 #cmakedefine01 HAVE_JACK
 #cmakedefine01 HAVE_SAM_9407
-#cmakedefine MUS_MAC_OSX 1
+#cmakedefine01 MUS_MAC_OSX
 #cmakedefine MUS_ESD 1
 #cmakedefine MUS_HPUX 1
 
 #define HAVE_GUILE 0
-/* #undef HAVE_SCHEME */
-/* #undef HAVE_RUBY */
-/* #undef HAVE_FORTH */
+#define HAVE_SCHEME 0
+#define HAVE_RUBY 0
+#define HAVE_FORTH 0
 /* #undef HAVE_GAUCHE */
 #define HAVE_EXTENSION_LANGUAGE 0
 /* #undef SND_CONFIG_GET_ID_ARGS */
@@ -120,5 +132,6 @@
 
 #define MUS_OUT_FORMAT MUS_LFLOAT
 #define USE_SND 0
+#define MUS_DEBUGGING 0
 
 #endif

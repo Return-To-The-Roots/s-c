@@ -501,7 +501,7 @@ int resample(                        /* number of output samples returned */
         LpScl = SMALL_FILTER_SCALE; /* Unity-gain scale factor */
         Nwing = SMALL_FILTER_NWING; /* Filter table length */
     }
-#if DEBUG
+#ifdef DEBUG
     fprintf(stderr, "Attenuating resampler scale factor by 0.95 "
                     "to reduce probability of clipping\n");
 #endif

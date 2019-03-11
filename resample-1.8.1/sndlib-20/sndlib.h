@@ -6,16 +6,12 @@
 #define SNDLIB_REVISION 0
 #define SNDLIB_DATE "28-Mar-06"
 
+#include "mus-config.h"
 #include <stdio.h>
 
-/* these are picked up during configuration */
-
-#define MUS_LITTLE_ENDIAN 1
-#define SNDLIB_USE_FLOATS 0
-#define MUS_SAMPLE_BITS 24
-#define MUS_AUDIO_COMPATIBLE_FORMAT MUS_LSHORT
-#define MUS_OUT_FORMAT MUS_LFLOAT
-#define Float float
+#if HAVE_UNISTD_H && (!(defined(_MSC_VER)))
+#include <unistd.h>
+#endif
 
 #include <time.h>
 /* time_t used by mus_sound_write_date */
@@ -33,6 +29,49 @@
 #define false 0
 #endif
 #endif
+#endif
+
+#if(defined(SIZEOF_OFF_T) && (SIZEOF_OFF_T > 4)) || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64))
+#if(SIZEOF_OFF_T == SIZEOF_LONG)
+#define OFF_TD "%ld"
+#else
+#define OFF_TD "%lld"
+#endif
+#else
+#define OFF_TD "%d"
+#endif
+
+#ifndef MUS_LITTLE_ENDIAN
+#if WORDS_BIGENDIAN
+#define MUS_LITTLE_ENDIAN 0
+#else
+#define MUS_LITTLE_ENDIAN 1
+#endif
+#endif
+
+#ifndef c__FUNCTION__
+#if defined(__STDC__) && defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+#define c__FUNCTION__ __func__
+#else
+#ifdef __GNUC__
+#define c__FUNCTION__ __FUNCTION__
+#else
+#define c__FUNCTION__ ""
+#endif
+#endif
+#endif
+
+#if(!defined(M_PI))
+#define M_PI 3.14159265358979323846264338327
+#define M_PI_2 (M_PI / 2.0)
+#endif
+
+#define POWER_OF_2_P(x) ((((x)-1) & (x)) == 0)
+/* from sys/param.h */
+
+#ifndef SEEK_SET
+#define SEEK_SET 0
+#define SEEK_END 2
 #endif
 
 #define MUS_UNUSED(x) (void)(x)
@@ -207,6 +246,20 @@ enum
 
 #define MUS_DATA_FORMAT_OK(n) (((n) > MUS_UNKNOWN) && ((n) < MUS_NUM_DATA_FORMATS))
 
+#if MUS_MAC_OSX
+#if MUS_LITTLE_ENDIAN
+#define MUS_AUDIO_COMPATIBLE_FORMAT MUS_LFLOAT
+#else
+#define MUS_AUDIO_COMPATIBLE_FORMAT MUS_BFLOAT
+#endif
+#else
+#if MUS_LITTLE_ENDIAN
+#define MUS_AUDIO_COMPATIBLE_FORMAT MUS_LSHORT
+#else
+#define MUS_AUDIO_COMPATIBLE_FORMAT MUS_BSHORT
+#endif
+#endif
+
 #define MUS_NIST_SHORTPACK 2
 #define MUS_AIFF_IMA_ADPCM 99
 
@@ -339,7 +392,67 @@ enum
 
 /* keep this list in sync with mus_error_names in sound.c and snd-test.scm|rb */
 
+#if MUS_DEBUGGING
+#define CALLOC(a, b) mem_calloc((a), (b), c__FUNCTION__, __FILE__, __LINE__)
+#define MALLOC(a) mem_malloc((a), c__FUNCTION__, __FILE__, __LINE__)
+#ifndef __cplusplus
+#define FREE(a) a = mem_free(a, c__FUNCTION__, __FILE__, __LINE__)
+#else
+#define FREE(a) mem_free(a, c__FUNCTION__, __FILE__, __LINE__)
+#endif
+#define REALLOC(a, b) mem_realloc(a, (b), c__FUNCTION__, __FILE__, __LINE__)
+#else
+void* mus_realloc(void* ptr, size_t size);
+#define CALLOC(a, b) calloc((size_t)(a), (size_t)(b))
+#define MALLOC(a) malloc((size_t)(a))
+#define FREE(a) free(a)
+#define REALLOC(a, b) mus_realloc(a, (size_t)(b))
+#endif
+
+#if MUS_WINDOZE
+#ifdef FOPEN
+#undef FOPEN
+#endif
+#endif
+
+#if USE_SND
+#define OPEN(File, Flags, Mode) snd_open((File), (Flags), (Mode))
+#define FOPEN(File, Flags) snd_fopen((File), (Flags))
+#define CREAT(File, Flags) snd_creat((File), (Flags))
+#define REMOVE(OldF) snd_remove(OldF, IGNORE_CACHE)
+#define STRERROR(Err) snd_io_strerror()
+#define CLOSE(Fd, Name) snd_close(Fd, Name)
+#define FCLOSE(Fd, Name) snd_fclose(Fd, Name)
+#else
+#define OPEN(File, Flags, Mode) open((File), (Flags), (Mode))
+#define FOPEN(File, Flags) fopen((File), (Flags))
+#define CREAT(File, Flags) creat((File), (Flags))
+#define REMOVE(OldF) remove(OldF)
+#define STRERROR(Err) strerror(Err)
+#define CLOSE(Fd, Name) close(Fd)
+#define FCLOSE(Fd, Name) fclose(Fd)
+#endif
+
+#ifndef S_setB
+#if HAVE_RUBY
+#define S_setB "set_"
+#endif
+#if HAVE_SCHEME
+#define S_setB "set! "
+#endif
+#if HAVE_FORTH
+#define S_setB "set-"
+#endif
+#if(!HAVE_EXTENSION_LANGUAGE)
+#define S_setB "set-"
+#endif
+#endif
+
 #define MUS_LOOP_INFO_SIZE 8
+
+#ifndef Float
+#define Float float
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -429,6 +542,12 @@ int mus_float_array_to_file(const char* filename, Float* ddata, int len, int sra
 
 /* -------- audio.c -------- */
 
+#if(HAVE_OSS || HAVE_ALSA || HAVE_JACK)
+#define ALSA_API 0
+#define OSS_API 1
+#define JACK_API 2
+#endif
+
 void mus_audio_describe(void);
 char* mus_audio_report(void);
 int mus_audio_open_output(int dev, int srate, int chans, int format, int size);
@@ -437,13 +556,14 @@ int mus_audio_write(int line, char* buf, int bytes);
 int mus_audio_close(int line);
 int mus_audio_read(int line, char* buf, int bytes);
 
-int mus_audio_write_buffers(int line, int frames, int chans, mus_sample_t** bufs, int output_format, bool clipped);
-int mus_audio_read_buffers(int line, int frames, int chans, mus_sample_t** bufs, int input_format);
+int mus_audio_write_buffers(int port, int frames, int chans, mus_sample_t** bufs, int output_format, bool clipped);
+int mus_audio_read_buffers(int port, int frames, int chans, mus_sample_t** bufs, int input_format);
 
 int mus_audio_mixer_read(int dev, int field, int chan, float* val);
 int mus_audio_mixer_write(int dev, int field, int chan, float* val);
 int mus_audio_initialize(void);
 
+#if HAVE_OSS || HAVE_ALSA
 int mus_audio_reinitialize(void); /* 29-Aug-01 for CLM/Snd bugfix? */
 int mus_audio_systems(void);
 char* mus_audio_system_name(int sys);
@@ -457,7 +577,6 @@ void mus_sun_set_outputs(int speakers, int headphones, int line_out);
 
 void mus_oss_set_buffers(int num, int size);
 #define mus_audio_set_oss_buffers mus_oss_set_buffers
-
 char* mus_alsa_playback_device(void);
 char* mus_alsa_set_playback_device(const char* name);
 char* mus_alsa_capture_device(void);
@@ -470,10 +589,30 @@ int mus_alsa_buffers(void);
 int mus_alsa_set_buffers(int num);
 bool mus_alsa_squelch_warning(void);
 bool mus_alsa_set_squelch_warning(bool val);
+int mus_audio_api(void);
+void mus_oss_set_buffers(int num, int size);
+#endif
+
+int mus_audio_systems(void);
+char* mus_audio_system_name(int sys);
+char* mus_audio_moniker(void);
+int mus_audio_compatible_format(int dev);
+
+#if MUS_SUN
+void mus_sun_set_outputs(int speakers, int headphones, int line_out);
+#endif
+
+#if MUS_NETBSD
+void mus_netbsd_set_outputs(int speakers, int headphones, int line_out);
+#endif
+
+#if(!HAVE_STRERROR)
+char* strerror(int errnum);
+#endif
 
 /* -------- io.c -------- */
 
-int mus_file_open_descriptors(int tfd, const char* arg, int df, int ds, off_t dl, int dc, int dt);
+int mus_file_open_descriptors(int tfd, const char* name, int format, int size, off_t location, int chans, int type);
 int mus_file_open_read(const char* arg);
 bool mus_file_probe(const char* arg);
 int mus_file_open_write(const char* arg);
@@ -481,15 +620,15 @@ int mus_file_create(const char* arg);
 int mus_file_reopen_write(const char* arg);
 int mus_file_close(int fd);
 off_t mus_file_seek_frame(int tfd, off_t frame);
-int mus_file_read(int fd, int beg, int end, int chans, mus_sample_t** bufs);
-int mus_file_read_chans(int fd, int beg, int end, int chans, mus_sample_t** bufs, mus_sample_t** cm);
+int mus_file_read(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
+int mus_file_read_chans(int tfd, int beg, int end, int chans, mus_sample_t** bufs, mus_sample_t** cm);
 int mus_file_write(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
 int mus_file_read_any(int tfd, int beg, int chans, int nints, mus_sample_t** bufs, mus_sample_t** cm);
 int mus_file_read_file(int tfd, int beg, int chans, int nints, mus_sample_t** bufs);
 int mus_file_read_buffer(int charbuf_data_format, int beg, int chans, int nints, mus_sample_t** bufs, char* charbuf);
 int mus_file_write_file(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
 int mus_file_write_buffer(int charbuf_data_format, int beg, int end, int chans, mus_sample_t** bufs, char* charbuf, bool clipped);
-char* mus_expand_filename(const char* name);
+char* mus_expand_filename(const char* filename);
 char* mus_getcwd(void);
 
 bool mus_clipping(void);
@@ -567,10 +706,10 @@ off_t mus_header_true_length(void);
 int mus_header_original_format(void);
 off_t mus_samples_to_bytes(int format, off_t size);
 off_t mus_bytes_to_samples(int format, off_t size);
-int mus_header_write_next_header(int chan, int srate, int chans, int loc, int siz, int format, const char* comment, int len);
+int mus_header_write_next_header(int chan, int wsrate, int wchans, int loc, int siz, int format, const char* comment, int len);
 int mus_header_read(const char* name);
-int mus_header_write(const char* name, int type, int srate, int chans, off_t loc, off_t size_in_samples, int format, const char* comment,
-                     int len);
+int mus_header_write(const char* name, int type, int in_srate, int in_chans, off_t loc, off_t size_in_samples, int format,
+                     const char* comment, int len);
 off_t mus_header_aux_comment_start(int n);
 off_t mus_header_aux_comment_end(int n);
 int mus_header_initialize(void);
@@ -583,7 +722,7 @@ int mus_header_sf2_end(int n);
 int mus_header_sf2_loop_start(int n);
 int mus_header_sf2_loop_end(int n);
 const char* mus_header_original_format_name(int format, int type);
-bool mus_header_no_header(const char* name);
+bool mus_header_no_header(const char* filename);
 
 char* mus_header_riff_aux_comment(const char* name, off_t* starts, off_t* ends);
 char* mus_header_aiff_aux_comment(const char* name, off_t* starts, off_t* ends);
@@ -594,7 +733,7 @@ int mus_header_change_type(const char* filename, int new_type, int new_format);
 int mus_header_change_format(const char* filename, int type, int new_format);
 int mus_header_change_location(const char* filename, int type, off_t new_location);
 int mus_header_change_comment(const char* filename, int type, char* new_comment);
-int mus_header_change_data_size(const char* filename, int type, off_t bytes);
+int mus_header_change_data_size(const char* filename, int type, off_t size);
 
 typedef void mus_header_write_hook_t(const char* filename);
 mus_header_write_hook_t* mus_header_write_set_hook(mus_header_write_hook_t* new_hook);
@@ -607,7 +746,24 @@ int mus_midi_read(int line, unsigned char* buffer, int bytes);
 int mus_midi_write(int line, unsigned char* buffer, int bytes);
 char* mus_midi_device_name(int sysdev);
 char* mus_midi_describe(void);
+#if HAVE_EXTENSION_LANGUAGE
 void mus_midi_init(void);
+#endif
+
+#if MUS_DEBUGGING
+/* snd-utils.c (only used in conjunction with Snd's memory tracking functions) */
+void* mem_calloc(int len, int size, const char* func, const char* file, int line);
+void* mem_malloc(int len, const char* func, const char* file, int line);
+void* mem_free(void* ptr, const char* func, const char* file, int line);
+void* mem_realloc(void* ptr, int size, const char* func, const char* file, int line);
+#endif
+
+#if(!HAVE_STRDUP)
+char* strdup(const char* str);
+#endif
+#if(!HAVE_FILENO)
+int fileno(FILE* fp);
+#endif
 
 #ifdef __cplusplus
 }

@@ -56,6 +56,7 @@
 /* if using Ruby, OpenTransport.h T_* definitions collide with Ruby's -- it isn't needed here, so... */
 #define REDEFINE_HAVE_RUBY 1
 #undef HAVE_RUBY
+#define HAVE_RUBY 0
 #endif
 
 #if USE_SND
@@ -69,6 +70,7 @@
 #define USE_MOTIF 1
 #undef USE_NO_GUI
 #if REDEFINE_HAVE_RUBY
+#undef HAVE_RUBY
 #define HAVE_RUBY 1
 #endif
 #endif
@@ -95,8 +97,8 @@
 #include <sys/sam9407.h>
 #endif
 
-#include "_sndlib.h"
 #include "sndlib-strings.h"
+#include "sndlib.h"
 
 #if(!HAVE_STRERROR)
 char* strerror(int errnum)
@@ -5416,7 +5418,7 @@ static void alsa_describe_audio_state_1(void)
 
     /* apparently input other than 8000 is 16-bit, 8000 is (?) mulaw */
 
-#if(defined(MUS_SUN) || defined(MUS_OPENBSD)) && (!(defined(AUDIO_OK)))
+#if(MUS_SUN || defined(MUS_OPENBSD)) && (!(defined(AUDIO_OK)))
 #define AUDIO_OK
 
 #include <stropts.h>
@@ -6315,7 +6317,7 @@ static void describe_audio_state_1(void)
 
     /* ------------------------------- WINDOZE ----------------------------------------- */
 
-#if defined(MUS_WINDOZE) && (!(defined(__CYGWIN__))) && 0
+#if MUS_WINDOZE && (!(defined(__CYGWIN__))) && 0
 #define AUDIO_OK
 
 #include <windows.h>
@@ -7265,7 +7267,7 @@ int mus_audio_mixer_write(int ur_dev, int field, int chan, float* val)
      *   and to a much lesser extent, coreaudio.pdf and the HAL/Daisy examples.
      */
 
-#if defined(MUS_MAC_OSX) && 0
+#if MUS_MAC_OSX && 0
 #define AUDIO_OK 1
 
 /*
@@ -9699,7 +9701,7 @@ int mus_audio_read(int line, char* buf, int bytes)
 
     /* ------------------------------- NETBSD ----------------------------------------- */
 
-#if defined(MUS_NETBSD) && (!(defined(AUDIO_OK)))
+#if MUS_NETBSD && (!(defined(AUDIO_OK)))
 #define AUDIO_OK
 /* started from Xanim a long time ago..., bugfixes from Thomas Klausner 30-Jul-05, worked into better shape Aug-05 */
 #include <fcntl.h>
@@ -10306,7 +10308,7 @@ void mus_reset_audio_c(void)
     audio_initialized = false;
     save_it = NULL;
     version_name = NULL;
-#ifdef MUS_SUN
+#if MUS_SUN
     sun_vol_name = NULL;
 #endif
     save_it_len = 0;
