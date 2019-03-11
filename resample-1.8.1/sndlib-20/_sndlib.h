@@ -549,8 +549,8 @@ int mus_audio_write(int line, char* buf, int bytes);
 int mus_audio_close(int line);
 int mus_audio_read(int line, char* buf, int bytes);
 
-int mus_audio_write_buffers(int line, int frames, int chans, mus_sample_t** bufs, int output_format, bool clipped);
-int mus_audio_read_buffers(int line, int frames, int chans, mus_sample_t** bufs, int input_format);
+int mus_audio_write_buffers(int port, int frames, int chans, mus_sample_t** bufs, int output_format, bool clipped);
+int mus_audio_read_buffers(int port, int frames, int chans, mus_sample_t** bufs, int input_format);
 
 int mus_audio_mixer_read(int dev, int field, int chan, float* val);
 int mus_audio_mixer_write(int dev, int field, int chan, float* val);
@@ -593,7 +593,7 @@ char* strerror(int errnum);
 
 /* -------- io.c -------- */
 
-int mus_file_open_descriptors(int tfd, const char* arg, int df, int ds, off_t dl, int dc, int dt);
+int mus_file_open_descriptors(int tfd, const char* name, int format, int size, off_t location, int chans, int type);
 int mus_file_open_read(const char* arg);
 bool mus_file_probe(const char* arg);
 int mus_file_open_write(const char* arg);
@@ -601,15 +601,15 @@ int mus_file_create(const char* arg);
 int mus_file_reopen_write(const char* arg);
 int mus_file_close(int fd);
 off_t mus_file_seek_frame(int tfd, off_t frame);
-int mus_file_read(int fd, int beg, int end, int chans, mus_sample_t** bufs);
-int mus_file_read_chans(int fd, int beg, int end, int chans, mus_sample_t** bufs, mus_sample_t** cm);
+int mus_file_read(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
+int mus_file_read_chans(int tfd, int beg, int end, int chans, mus_sample_t** bufs, mus_sample_t** cm);
 int mus_file_write(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
 int mus_file_read_any(int tfd, int beg, int chans, int nints, mus_sample_t** bufs, mus_sample_t** cm);
 int mus_file_read_file(int tfd, int beg, int chans, int nints, mus_sample_t** bufs);
 int mus_file_read_buffer(int charbuf_data_format, int beg, int chans, int nints, mus_sample_t** bufs, char* charbuf);
 int mus_file_write_file(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
 int mus_file_write_buffer(int charbuf_data_format, int beg, int end, int chans, mus_sample_t** bufs, char* charbuf, bool clipped);
-char* mus_expand_filename(const char* name);
+char* mus_expand_filename(const char* filename);
 char* mus_getcwd(void);
 
 bool mus_clipping(void);
@@ -687,9 +687,9 @@ off_t mus_header_true_length(void);
 int mus_header_original_format(void);
 off_t mus_samples_to_bytes(int format, off_t size);
 off_t mus_bytes_to_samples(int format, off_t size);
-int mus_header_write_next_header(int chan, int srate, int chans, int loc, int siz, int format, const char* comment, int len);
+int mus_header_write_next_header(int chan, int wsrate, int wchans, int loc, int siz, int format, const char* comment, int len);
 int mus_header_read(const char* name);
-int mus_header_write(const char* name, int type, int srate, int chans, off_t loc, off_t size_in_samples, int format, const char* comment,
+int mus_header_write(const char* name, int type, int in_srate, int in_chans, off_t loc, off_t size_in_samples, int format, const char* comment,
                      int len);
 off_t mus_header_aux_comment_start(int n);
 off_t mus_header_aux_comment_end(int n);
@@ -703,7 +703,7 @@ int mus_header_sf2_end(int n);
 int mus_header_sf2_loop_start(int n);
 int mus_header_sf2_loop_end(int n);
 const char* mus_header_original_format_name(int format, int type);
-bool mus_header_no_header(const char* name);
+bool mus_header_no_header(const char* filename);
 
 char* mus_header_riff_aux_comment(const char* name, off_t* starts, off_t* ends);
 char* mus_header_aiff_aux_comment(const char* name, off_t* starts, off_t* ends);
@@ -714,7 +714,7 @@ int mus_header_change_type(const char* filename, int new_type, int new_format);
 int mus_header_change_format(const char* filename, int type, int new_format);
 int mus_header_change_location(const char* filename, int type, off_t new_location);
 int mus_header_change_comment(const char* filename, int type, char* new_comment);
-int mus_header_change_data_size(const char* filename, int type, off_t bytes);
+int mus_header_change_data_size(const char* filename, int type, off_t size);
 
 typedef void mus_header_write_hook_t(const char* filename);
 mus_header_write_hook_t* mus_header_write_set_hook(mus_header_write_hook_t* new_hook);

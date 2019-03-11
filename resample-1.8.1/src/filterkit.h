@@ -115,7 +115,7 @@ int readFilter(char* filterFile, HWORD** ImpP, HWORD** ImpDP, UHWORD* LpScl, UHW
  *    3 - invalid Length in file
  */
 
-WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, HWORD Inc, HWORD Ph);
+WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, HWORD Ph, HWORD Inc);
 
 WORD FilterUD(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, HWORD Ph, HWORD Inc, UHWORD dhb);
 

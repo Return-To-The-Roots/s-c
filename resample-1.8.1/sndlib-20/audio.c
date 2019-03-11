@@ -156,7 +156,7 @@ static char* audio_strbuf = NULL; /* previous name "strbuf" collides with Mac OS
 static void pprint(char* str);
 
 int device_channels(int dev);
-int device_gains(int dev);
+int device_gains(int ur_dev);
 
 int device_channels(int dev)
 {
