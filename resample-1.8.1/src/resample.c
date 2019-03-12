@@ -45,10 +45,13 @@ static void fail(char* s)
     exit(1); /* Exit, indicating error */
 }
 
-static void fails(char* s, char* s2)
+__attribute__((format(printf, 1, 2))) static void fails(char* s, ...)
 {
     printf("resample: "); /* Display error message  */
-    printf(s, s2);
+    va_list ap;
+    va_start(ap, s);
+    vprintf(s, ap);
+    va_end(ap);
     printf("\n\n");
     exit(1); /* Exit, indicating error */
 }
