@@ -47,7 +47,7 @@
  * the defaultAnswer value will be the original contents of "answer".
  * ???
  */
-static void getstr(char* prompt, char* defaultAnswer, char* answer, int answerBufSize)
+static void getstr(const char* prompt, const char* defaultAnswer, char* answer, int answerBufSize)
 {
     char *p, s[200];
 
@@ -562,7 +562,7 @@ double zerox(HWORD* Data, double Factor)
     return (-100.0);
 }
 
-BOOL Query(char* prompt, BOOL deflt, char* help)
+BOOL Query(const char* prompt, BOOL deflt, const char* help)
 {
     char s[80];
 
@@ -579,7 +579,7 @@ BOOL Query(char* prompt, BOOL deflt, char* help)
     }
 }
 
-char* GetString(char* prompt, char* deflt, char* help)
+const char* GetString(const char* prompt, const char* deflt, const char* help)
 {
     static char s[200];
 
@@ -594,7 +594,7 @@ char* GetString(char* prompt, char* deflt, char* help)
     }
 }
 
-double GetDouble(char* title, double deflt, char* help)
+double GetDouble(const char* title, double deflt, const char* help)
 {
     char s[80], sdeflt[80];
     double newval;
@@ -615,7 +615,7 @@ double GetDouble(char* title, double deflt, char* help)
     }
 }
 
-unsigned short GetUShort(char* title, unsigned short deflt, char* help)
+unsigned short GetUShort(const char* title, unsigned short deflt, const char* help)
 {
     char s[80], sdeflt[80];
     int newval;

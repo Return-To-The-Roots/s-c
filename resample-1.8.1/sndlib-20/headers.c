@@ -629,7 +629,7 @@ const char* mus_data_format_short_name(int format)
 #define TO_LANG(Str) Str
 #endif
 
-char* mus_header_type_to_string(int type)
+const char* mus_header_type_to_string(int type)
 {
     switch(type)
     {
@@ -648,7 +648,7 @@ char* mus_header_type_to_string(int type)
     return (NULL);
 }
 
-char* mus_data_format_to_string(int format)
+const char* mus_data_format_to_string(int format)
 {
     switch(format)
     {

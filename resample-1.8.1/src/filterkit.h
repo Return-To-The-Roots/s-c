@@ -142,12 +142,12 @@ int initZerox(UHWORD tempNmult);
  */
 double zerox(HWORD* Data, double Factor);
 
-BOOL Query(char* prompt, BOOL deflt, char* help);
+BOOL Query(const char* prompt, BOOL deflt, const char* help);
 
-unsigned short GetUShort(char* title, unsigned short deflt, char* help);
+unsigned short GetUShort(const char* title, unsigned short deflt, const char* help);
 
-double GetDouble(char* title, double deflt, char* help);
+double GetDouble(const char* title, double deflt, const char* help);
 
-char* GetString(char* prompt, char* deflt, char* help);
+const char* GetString(const char* prompt, const char* deflt, const char* help);
 
 #define GetUHWORD(x, y, z) GetUShort(x, y, z)

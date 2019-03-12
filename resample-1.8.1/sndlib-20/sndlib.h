@@ -507,8 +507,8 @@ int mus_sound_set_samples(const char* arg, off_t val);
 
 const char* mus_header_type_name(int type);
 const char* mus_data_format_name(int format);
-char* mus_header_type_to_string(int type);
-char* mus_data_format_to_string(int format);
+const char* mus_header_type_to_string(int type);
+const char* mus_data_format_to_string(int format);
 const char* mus_data_format_short_name(int format);
 char* mus_sound_comment(const char* name);
 int mus_bytes_per_sample(int format);
@@ -536,7 +536,7 @@ int mus_sound_set_maxamps(const char* ifile, int chans, mus_sample_t* vals, off_
 bool mus_sound_maxamp_exists(const char* ifile);
 int mus_file_to_array(const char* filename, int chan, int start, int samples, mus_sample_t* array);
 int mus_array_to_file(const char* filename, mus_sample_t* ddata, int len, int srate, int channels);
-char* mus_array_to_file_with_error(const char* filename, mus_sample_t* ddata, int len, int srate, int channels);
+const char* mus_array_to_file_with_error(const char* filename, mus_sample_t* ddata, int len, int srate, int channels);
 int mus_file_to_float_array(const char* filename, int chan, off_t start, int samples, Float* array);
 int mus_float_array_to_file(const char* filename, Float* ddata, int len, int srate, int channels);
 
@@ -566,8 +566,8 @@ int mus_audio_initialize(void);
 #if HAVE_OSS || HAVE_ALSA
 int mus_audio_reinitialize(void); /* 29-Aug-01 for CLM/Snd bugfix? */
 int mus_audio_systems(void);
-char* mus_audio_system_name(int sys);
-char* mus_audio_moniker(void);
+const char* mus_audio_system_name(int sys);
+const char* mus_audio_moniker(void);
 int mus_audio_api(void);
 int mus_audio_compatible_format(int dev);
 
@@ -594,8 +594,8 @@ void mus_oss_set_buffers(int num, int size);
 #endif
 
 int mus_audio_systems(void);
-char* mus_audio_system_name(int sys);
-char* mus_audio_moniker(void);
+const char* mus_audio_system_name(int sys);
+const char* mus_audio_moniker(void);
 int mus_audio_compatible_format(int dev);
 
 #if MUS_SUN

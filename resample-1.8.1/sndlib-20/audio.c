@@ -155,7 +155,7 @@ static const char *mus_audio_device_name(int dev)
 #endif
 
 static char* audio_strbuf = NULL; /* previous name "strbuf" collides with Mac OSX global! */
-static void pprint(char* str);
+static void pprint(const char* str);
 
 int device_channels(int dev);
 int device_gains(int ur_dev);
@@ -212,12 +212,12 @@ int mus_audio_systems(void)
     return (1);
 } /* I think more than 1 is possible, but don't have a case to test with */
 
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return ("SGI");
 }
 
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
 #ifdef AL_RESOURCE
     return ("New SGI audio");
@@ -1411,7 +1411,7 @@ static char* mixer_name(int sys)
     return (DAC_NAME);
 }
 
-static char* oss_mus_audio_system_name(int system)
+static const char* oss_mus_audio_system_name(int system)
 {
 #if HAVE_SAM_9407
     if((system < sound_cards) && (audio_type[system] == SAM9407_DSP))
@@ -3710,7 +3710,7 @@ int mus_audio_systems(void)
     return (vect_mus_audio_systems());
 }
 
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return (vect_mus_audio_system_name(system));
 }
@@ -3719,7 +3719,7 @@ char* mus_audio_system_name(int system)
 static char* alsa_mus_audio_moniker(void);
 #endif
 
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
 #if(HAVE_OSS && HAVE_ALSA)
     char* both_names;
@@ -5442,7 +5442,7 @@ int mus_audio_systems(void)
 {
     return (1);
 }
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return ("Sun");
 }
@@ -5483,7 +5483,7 @@ void mus_sun_set_outputs(int speakers, int headphones, int line_out)
         return (MUS_ERROR);                                                       \
     } while(false)
 
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
 #ifndef AUDIO_DEV_AMD
     struct audio_device ad;
@@ -6400,7 +6400,7 @@ int mus_audio_systems(void)
     /* this number is available -- see below (user mixer number as in linux)->mixerGetNumDevs */
     return (1);
 }
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return ("Windoze");
 }
@@ -6626,7 +6626,7 @@ static char* mixer_component_name(int type)
 /* these actually need to be big enough to handle whatever comes along, since we can't read partial states */
 /*   or they need to be expanded as necessary */
 
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
     return ("MS audio");
 } /* version number of some sort? */
@@ -8120,12 +8120,12 @@ int mus_audio_systems(void)
 {
     return (1);
 }
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return ("Mac OSX");
 }
 
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
     return ("Mac OSX audio");
 }
@@ -8162,12 +8162,12 @@ int mus_audio_systems(void)
 {
     return (1);
 }
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return esd_name;
 }
 static char our_name[LABEL_BUFFER_SIZE];
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
 #ifdef MUS_ESD_VERSION
 #ifdef MUS_AUDIOFILE_VERSION
@@ -9329,7 +9329,7 @@ int jack_mus_audio_systems(void)
     return (2);
 }
 
-char* jack_mus_audio_system_name(int system)
+const char* jack_mus_audio_system_name(int system)
 {
     return ("linux jack");
 }
@@ -9366,7 +9366,7 @@ char* jack_mus_audio_moniker(void)
         return (MUS_ERROR);                                                       \
     } while(false)
 
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
     return ("HPUX audio");
 }
@@ -9647,7 +9647,7 @@ int mus_audio_systems(void)
 {
     return (1);
 }
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return ("HPUX");
 }
@@ -9773,12 +9773,12 @@ int mus_audio_systems(void)
     return (1);
 }
 
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return ("NetBSD");
 }
 
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
     return ("NetBSD audio");
 }
@@ -10239,11 +10239,11 @@ int mus_audio_systems(void)
 {
     return (0);
 }
-char* mus_audio_system_name(int system)
+const char* mus_audio_system_name(int system)
 {
     return ("none");
 }
-char* mus_audio_moniker(void)
+const char* mus_audio_moniker(void)
 {
     return ("no audio support");
 }
@@ -10254,7 +10254,7 @@ static int print_it = 1;
 static int save_it_len = 0;
 static int save_it_loc = 0;
 
-static void pprint(char* str)
+static void pprint(const char* str)
 {
     int i, len;
     if((str) && (*str))

@@ -31,6 +31,7 @@ Report bugs to <bug-resample@w3k.org>.\n\n\
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -38,14 +39,14 @@ static int trace = 1; /* controls verbosity of output */
 
 static char comment[1024] = "";
 
-static void fail(char* s)
+noreturn static void fail(const char* s)
 {
     fprintf(stderr, "\n*** resample: %s \n", s); /* Display error message  */
     fprintf(stderr, USAGE);
     exit(1); /* Exit, indicating error */
 }
 
-__attribute__((format(printf, 1, 2))) static void fails(char* s, ...)
+static __attribute__((format(printf, 1, 2))) noreturn void fails(const char* s, ...)
 {
     printf("resample: "); /* Display error message  */
     va_list ap;

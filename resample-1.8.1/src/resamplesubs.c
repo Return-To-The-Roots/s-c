@@ -213,7 +213,7 @@ static int SrcUD(HWORD X[], HWORD Y[], double factor, UWORD* Time, UHWORD Nx, UH
     return (Y - Ystart); /* Return the number of output samples */
 }
 
-static int err_ret(char* s)
+static int err_ret(const char* s)
 {
     fprintf(stderr, "resample: %s \n\n", s); /* Display error message  */
     return -1;
