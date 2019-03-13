@@ -66,7 +66,8 @@ int main(int argc, char* argv[])
     BOOL linearInterp = FALSE; /* TRUE => no filter, linearly interpolate */
     BOOL knowFactor = FALSE;   /* Used to detect insufficient command-line spec */
     int inCount, outCount, outCountReal;
-    int infd, outfd, insrate, nChans, result;
+    int infd, outfd, insrate, result;
+    unsigned nChans;
     int inType, inFormat;
     int outType, outFormat;
     BOOL isFilterFileEmpty;
@@ -234,8 +235,8 @@ int main(int argc, char* argv[])
     // resample-1.8:  fails("Error closing output file (%s)", strerror(errno));
     mus_file_close(outfd);
     {
-        int sound_bytes = outCountReal * nChans * mus_bytes_per_sample(outFormat);
-        mus_header_change_data_size(outsfname, outType, sound_bytes);
+        unsigned sound_bytes = (unsigned)outCountReal * nChans * mus_bytes_per_sample(outFormat);
+        mus_header_change_data_size(outsfname, outType, (off_t)sound_bytes);
     }
 
     printf("\nConversion Finished:  %d output samples.\n\n", outCount);

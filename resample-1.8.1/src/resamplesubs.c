@@ -19,14 +19,15 @@
 /* CAUTION: Assumes we call this for only one resample job per program run! */
 /* return: 0 - notDone */
 /*        >0 - index of last sample */
-static int readData(int infd,             /* input file descriptor */
-                    int inCount,          /* _total_ number of frames in input file */
-                    HWORD* outPtr1,       /* array receiving left chan samps */
-                    HWORD* outPtr2,       /* array receiving right chan samps */
-                    int dataArraySize,    /* size of these arrays */
-                    int nChans, int Xoff) /* read into input array starting at this index */
+static int readData(int infd,                       /* input file descriptor */
+                    int inCount,                    /* _total_ number of frames in input file */
+                    HWORD* outPtr1,                 /* array receiving left chan samps */
+                    HWORD* outPtr2,                 /* array receiving right chan samps */
+                    unsigned dataArraySize,         /* size of these arrays */
+                    unsigned nChans, unsigned Xoff) /* read into input array starting at this index */
 {
-    int i, Nsamps, nret;
+    int nret;
+    unsigned i, Nsamps;
     static unsigned int framecount; /* frames previously read */
     static mus_sample_t** ibufs = NULL;
 
@@ -45,7 +46,7 @@ static int readData(int infd,             /* input file descriptor */
     outPtr1 += Xoff;               /* Start at designated sample number */
     outPtr2 += Xoff;
 
-    nret = mus_file_read(infd, 0, Nsamps - 1, nChans, ibufs);
+    nret = mus_file_read(infd, 0, (int)Nsamps - 1, nChans, ibufs);
     if(nret < 0)
     {
         fprintf(stderr, "readData: Can't read data!\n");
@@ -66,10 +67,10 @@ static int readData(int infd,             /* input file descriptor */
         }
     }
 
-    framecount += Nsamps;
+    framecount += (unsigned)Nsamps;
 
     if(framecount >= (unsigned)inCount) /* return index of last samp */
-        return (((Nsamps - (framecount - inCount)) - 1) + Xoff);
+        return ((((int)Nsamps - ((int)framecount - inCount)) - 1) + (int)Xoff);
     else
         return 0;
 }
@@ -126,7 +127,7 @@ static int SrcLinear(HWORD X[], HWORD Y[], double factor, UWORD* Time, UHWORD Nx
     dtb = (UWORD)(dt * (1 << Np) + 0.5); /* Fixed-point representation */
 
     Ystart = Y;
-    endTime = *Time + (1 << Np) * (WORD)Nx;
+    endTime = *Time + (1 << Np) * (UWORD)Nx;
     while(*Time < endTime)
     {
         iconst = (*Time) & Pmask;
@@ -159,7 +160,7 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD* Time, UHWORD Nx, UH
     dtb = (UWORD)(dt * (1 << Np) + 0.5); /* Fixed-point representation */
 
     Ystart = Y;
-    endTime = *Time + (1 << Np) * (WORD)Nx;
+    endTime = *Time + (1 << Np) * (UWORD)Nx;
     while(*Time < endTime)
     {
         Xp = &X[*Time >> Np]; /* Ptr to current input sample */
@@ -197,7 +198,7 @@ static int SrcUD(HWORD X[], HWORD Y[], double factor, UWORD* Time, UHWORD Nx, UH
     dhb = (UWORD)(dh * (1 << Na) + 0.5); /* Fixed-point representation */
 
     Ystart = Y;
-    endTime = *Time + (1 << Np) * (WORD)Nx;
+    endTime = *Time + (1 << Np) * (UWORD)Nx;
     while(*Time < endTime)
     {
         Xp = &X[*Time >> Np];                                                        /* Ptr to current input sample */
@@ -224,7 +225,7 @@ static int resampleFast(                        /* number of output samples retu
                         int infd,               /* input and output file descriptors */
                         int outfd, int inCount, /* number of input samples to convert */
                         int outCount,           /* number of output samples to compute */
-                        int nChans)             /* number of sound channels (1 or 2) */
+                        unsigned nChans)        /* number of sound channels (1 or 2) */
 {
     UWORD Time, Time2; /* Current time/pos in input sample */
     UHWORD Xp, Ncreep, Xoff, Xread;
@@ -244,9 +245,9 @@ static int resampleFast(                        /* number of output samples retu
     last = 0;                  /* Have not read last input sample yet */
     Ycount = 0;                /* Current sample and length of output file */
 
-    Xp = Xoff;           /* Current "now"-sample pointer for input */
-    Xread = Xoff;        /* Position in input array to read into */
-    Time = (Xoff << Np); /* Current-time pointer for converter */
+    Xp = Xoff;                  /* Current "now"-sample pointer for input */
+    Xread = Xoff;               /* Position in input array to read into */
+    Time = ((UWORD)Xoff << Np); /* Current-time pointer for converter */
 
     for(i = 0; i < Xoff; X1[i++] = 0)
         ; /* Need Xoff zeros at begining of sample */
@@ -257,7 +258,7 @@ static int resampleFast(                        /* number of output samples retu
     {
         if(!last) /* If haven't read last sample yet */
         {
-            last = readData(infd, inCount, X1, X2, IBUFFSIZE, nChans, (int)Xread);
+            last = readData(infd, inCount, X1, X2, IBUFFSIZE, nChans, Xread);
             if(last && (last - Xoff < Nx))
             {                     /* If last sample has been read... */
                 Nx = last - Xoff; /* ...calc last sample affected by filter */
@@ -272,13 +273,13 @@ static int resampleFast(                        /* number of output samples retu
         if(nChans == 2)
             Nout = SrcLinear(X2, Y2, factor, &Time2, Nx);
 
-        Time -= (Nx << Np);           /* Move converter Nx samples back in time */
+        Time -= ((UWORD)Nx << Np);    /* Move converter Nx samples back in time */
         Xp += Nx;                     /* Advance by number of samples processed */
         Ncreep = (Time >> Np) - Xoff; /* Calc time accumulation in Time */
         if(Ncreep)
         {
-            Time -= (Ncreep << Np); /* Remove time accumulation */
-            Xp += Ncreep;           /* and add it to read pointer */
+            Time -= ((UWORD)Ncreep << Np); /* Remove time accumulation */
+            Xp += Ncreep;                  /* and add it to read pointer */
         }
         for(i = 0; i < IBUFFSIZE - Xp + Xoff; i++)
         {                              /* Copy part of input signal */
@@ -333,7 +334,7 @@ static int resampleWithFilter(                        /* number of output sample
                               int infd,               /* input and output file descriptors */
                               int outfd, int inCount, /* number of input samples to convert */
                               int outCount,           /* number of output samples to compute */
-                              int nChans,             /* number of sound channels (1 or 2) */
+                              unsigned nChans,        /* number of sound channels (1 or 2) */
                               BOOL interpFilt,        /* TRUE means interpolate filter coeffs */
                               HWORD Imp[], HWORD ImpD[], UHWORD LpScl, UHWORD Nmult, UHWORD Nwing)
 {
@@ -361,11 +362,11 @@ static int resampleWithFilter(                        /* number of output sample
 
     Nx = IBUFFSIZE - 2 * Xoff; /* # of samples to process each iteration */
 
-    last = 0;            /* Have not read last input sample yet */
-    Ycount = 0;          /* Current sample and length of output file */
-    Xp = Xoff;           /* Current "now"-sample pointer for input */
-    Xread = Xoff;        /* Position in input array to read into */
-    Time = (Xoff << Np); /* Current-time pointer for converter */
+    last = 0;                   /* Have not read last input sample yet */
+    Ycount = 0;                 /* Current sample and length of output file */
+    Xp = Xoff;                  /* Current "now"-sample pointer for input */
+    Xread = Xoff;               /* Position in input array to read into */
+    Time = ((UWORD)Xoff << Np); /* Current-time pointer for converter */
 
     for(i = 0; i < Xoff; X1[i++] = 0)
         ; /* Need Xoff zeros at begining of sample */
@@ -376,7 +377,7 @@ static int resampleWithFilter(                        /* number of output sample
     {
         if(!last) /* If haven't read last sample yet */
         {
-            last = readData(infd, inCount, X1, X2, IBUFFSIZE, nChans, (int)Xread);
+            last = readData(infd, inCount, X1, X2, IBUFFSIZE, nChans, Xread);
             if(last && (last - Xoff < Nx))
             {                     /* If last sample has been read... */
                 Nx = last - Xoff; /* ...calc last sample affected by filter */
@@ -398,13 +399,13 @@ static int resampleWithFilter(                        /* number of output sample
                 Nout = SrcUD(X2, Y2, factor, &Time2, Nx, Nwing, LpScl, Imp, ImpD, interpFilt);
         }
 
-        Time -= (Nx << Np);           /* Move converter Nx samples back in time */
+        Time -= ((UWORD)Nx << Np);    /* Move converter Nx samples back in time */
         Xp += Nx;                     /* Advance by number of samples processed */
         Ncreep = (Time >> Np) - Xoff; /* Calc time accumulation in Time */
         if(Ncreep)
         {
-            Time -= (Ncreep << Np); /* Remove time accumulation */
-            Xp += Ncreep;           /* and add it to read pointer */
+            Time -= ((UWORD)Ncreep << Np); /* Remove time accumulation */
+            Xp += Ncreep;                  /* and add it to read pointer */
         }
         for(i = 0; i < IBUFFSIZE - Xp + Xoff; i++)
         {                              /* Copy part of input signal */
@@ -454,7 +455,7 @@ int resample(                        /* number of output samples returned */
              int infd,               /* input and output file descriptors */
              int outfd, int inCount, /* number of input samples to convert */
              int outCount,           /* number of output samples to compute */
-             int nChans,             /* number of sound channels (1 or 2) */
+             unsigned nChans,        /* number of sound channels (1 or 2) */
              BOOL interpFilt,        /* TRUE means interpolate filter coeffs */
              int fastMode,           /* 0 = highest quality, slowest speed */
              BOOL largeFilter,       /* TRUE means use 65-tap FIR filter */

@@ -96,14 +96,14 @@
 #define MUS_INT_TO_SAMPLE(n) ((mus_sample_t)(n))
 #define MUS_SAMPLE_TO_INT(n) ((int)(n))
 /* these are for direct read/write (no cross-image assumption is made about 32 bit int scaling) */
-#define MUS_FLOAT_TO_FIX ((MUS_SAMPLE_BITS < 32) ? (1 << (MUS_SAMPLE_BITS - 1)) : 0x7fffffff)
+static const int MUS_FLOAT_TO_FIX = (MUS_SAMPLE_BITS < 32) ? (1 << (MUS_SAMPLE_BITS - 1)) : 0x7fffffff;
 #define MUS_FIX_TO_FLOAT (1.0 / (float)(MUS_FLOAT_TO_FIX))
 #define MUS_FLOAT_TO_SAMPLE(n) ((mus_sample_t)((n)*MUS_FLOAT_TO_FIX))
 #define MUS_SAMPLE_TO_FLOAT(n) ((float)((n)*MUS_FIX_TO_FLOAT))
 #define MUS_DOUBLE_TO_SAMPLE(n) ((mus_sample_t)((n)*MUS_FLOAT_TO_FIX))
 #define MUS_SAMPLE_TO_DOUBLE(n) ((double)((n)*MUS_FIX_TO_FLOAT))
-#define MUS_SAMPLE_MAX ((mus_sample_t)((MUS_SAMPLE_BITS < 32) ? (MUS_FLOAT_TO_FIX - 1) : 0x7fffffff))
-#define MUS_SAMPLE_MIN ((mus_sample_t)((MUS_SAMPLE_BITS < 32) ? (-(MUS_FLOAT_TO_FIX)) : -0x7fffffff))
+static const mus_sample_t MUS_SAMPLE_MAX = (mus_sample_t)((MUS_SAMPLE_BITS < 32) ? (MUS_FLOAT_TO_FIX - 1) : 0x7fffffff);
+static const mus_sample_t MUS_SAMPLE_MIN = (mus_sample_t)((MUS_SAMPLE_BITS < 32) ? (-(MUS_FLOAT_TO_FIX)) : -0x7fffffff);
 #define mus_sample_abs(Sample) abs(Sample)
 #else
 #define mus_sample_t Float
@@ -464,26 +464,26 @@ extern "C" {
 int mus_error(int error, const char* format, ...) __attribute__((format(printf, 2, 3)));
 void mus_print(const char* format, ...) __attribute__((format(printf, 1, 2)));
 char* mus_format(const char* format, ...) __attribute__((format(printf, 1, 2)));
-void mus_snprintf(char* buffer, int buffer_len, const char* format, ...) __attribute__((format(printf, 3, 4)));
+void mus_snprintf(char* buffer, unsigned buffer_len, const char* format, ...) __attribute__((format(printf, 3, 4)));
 #else
 int mus_error(int error, const char* format, ...);
 void mus_print(const char* format, ...);
 char* mus_format(const char* format, ...);
-void mus_snprintf(char* buffer, int buffer_len, const char* format, ...);
+void mus_snprintf(char* buffer, unsigned buffer_len, const char* format, ...);
 #endif
 
 typedef void mus_error_handler_t(int type, char* msg);
 mus_error_handler_t* mus_error_set_handler(mus_error_handler_t* new_error_handler);
-int mus_make_error(char* error_name);
+unsigned mus_make_error(char* error_name);
 const char* mus_error_type_to_string(int err);
 
 typedef void mus_print_handler_t(char* msg);
 mus_print_handler_t* mus_print_set_handler(mus_print_handler_t* new_print_handler);
 
-off_t mus_sound_samples(const char* arg);
-off_t mus_sound_frames(const char* arg);
+int mus_sound_samples(const char* arg);
+int mus_sound_frames(const char* arg);
 int mus_sound_datum_size(const char* arg);
-off_t mus_sound_data_location(const char* arg);
+int mus_sound_data_location(const char* arg);
 int mus_sound_chans(const char* arg);
 int mus_sound_srate(const char* arg);
 int mus_sound_header_type(const char* arg);
@@ -491,19 +491,19 @@ int mus_sound_data_format(const char* arg);
 int mus_sound_original_format(const char* arg);
 off_t mus_sound_comment_start(const char* arg);
 off_t mus_sound_comment_end(const char* arg);
-off_t mus_sound_length(const char* arg);
+int mus_sound_length(const char* arg);
 int mus_sound_fact_samples(const char* arg);
 time_t mus_sound_write_date(const char* arg);
 int mus_sound_type_specifier(const char* arg);
 int mus_sound_block_align(const char* arg);
 int mus_sound_bits_per_sample(const char* arg);
 
-int mus_sound_set_chans(const char* arg, int val);
+int mus_sound_set_chans(const char* arg, unsigned val);
 int mus_sound_set_srate(const char* arg, int val);
 int mus_sound_set_header_type(const char* arg, int val);
 int mus_sound_set_data_format(const char* arg, int val);
 int mus_sound_set_data_location(const char* arg, off_t val);
-int mus_sound_set_samples(const char* arg, off_t val);
+int mus_sound_set_samples(const char* arg, size_t val);
 
 const char* mus_header_type_name(int type);
 const char* mus_data_format_name(int format);
@@ -511,34 +511,34 @@ const char* mus_header_type_to_string(int type);
 const char* mus_data_format_to_string(int format);
 const char* mus_data_format_short_name(int format);
 char* mus_sound_comment(const char* name);
-int mus_bytes_per_sample(int format);
+unsigned mus_bytes_per_sample(int format);
 float mus_sound_duration(const char* arg);
 int mus_sound_initialize(void);
 int mus_sample_bits(void);
 int mus_sound_override_header(const char* arg, int srate, int chans, int format, int type, off_t location, off_t size);
 int mus_sound_forget(const char* name);
-int mus_sound_prune(void);
+unsigned mus_sound_prune(void);
 void mus_sound_report_cache(FILE* fp);
 int* mus_sound_loop_info(const char* arg);
 void mus_sound_set_loop_info(const char* arg, int* loop);
 
 int mus_sound_open_input(const char* arg);
-int mus_sound_open_output(const char* arg, int srate, int chans, int data_format, int header_type, const char* comment);
-int mus_sound_reopen_output(const char* arg, int chans, int format, int type, off_t data_loc);
+int mus_sound_open_output(const char* arg, int srate, unsigned chans, int data_format, int header_type, const char* comment);
+int mus_sound_reopen_output(const char* arg, unsigned chans, int format, int type, off_t data_loc);
 int mus_sound_close_input(int fd);
 int mus_sound_close_output(int fd, off_t bytes_of_data);
 #define mus_sound_seek_frame(Ifd, Frm) mus_file_seek_frame(Ifd, Frm)
 #define mus_sound_read(Fd, Beg, End, Chans, Bufs) mus_file_read(Fd, Beg, End, Chans, Bufs)
 #define mus_sound_write(Fd, Beg, End, Chans, Bufs) mus_file_write(Fd, Beg, End, Chans, Bufs)
 
-off_t mus_sound_maxamps(const char* ifile, int chans, mus_sample_t* vals, off_t* times);
-int mus_sound_set_maxamps(const char* ifile, int chans, mus_sample_t* vals, off_t* times);
+off_t mus_sound_maxamps(const char* ifile, unsigned chans, mus_sample_t* vals, off_t* times);
+int mus_sound_set_maxamps(const char* ifile, unsigned chans, mus_sample_t* vals, off_t* times);
 bool mus_sound_maxamp_exists(const char* ifile);
-int mus_file_to_array(const char* filename, int chan, int start, int samples, mus_sample_t* array);
-int mus_array_to_file(const char* filename, mus_sample_t* ddata, int len, int srate, int channels);
-const char* mus_array_to_file_with_error(const char* filename, mus_sample_t* ddata, int len, int srate, int channels);
-int mus_file_to_float_array(const char* filename, int chan, off_t start, int samples, Float* array);
-int mus_float_array_to_file(const char* filename, Float* ddata, int len, int srate, int channels);
+int mus_file_to_array(const char* filename, int chan, int start, unsigned samples, mus_sample_t* array);
+int mus_array_to_file(const char* filename, mus_sample_t* ddata, int len, int srate, unsigned channels);
+const char* mus_array_to_file_with_error(const char* filename, mus_sample_t* ddata, int len, int srate, unsigned channels);
+int mus_file_to_float_array(const char* filename, int chan, off_t start, unsigned samples, Float* array);
+int mus_float_array_to_file(const char* filename, Float* ddata, int len, int srate, unsigned channels);
 
 /* -------- audio.c -------- */
 
@@ -550,14 +550,14 @@ int mus_float_array_to_file(const char* filename, Float* ddata, int len, int sra
 
 void mus_audio_describe(void);
 char* mus_audio_report(void);
-int mus_audio_open_output(int dev, int srate, int chans, int format, int size);
-int mus_audio_open_input(int dev, int srate, int chans, int format, int size);
-int mus_audio_write(int line, char* buf, int bytes);
+int mus_audio_open_output(int dev, int srate, unsigned chans, int format, int size);
+int mus_audio_open_input(int dev, int srate, unsigned chans, int format, int size);
+int mus_audio_write(int line, char* buf, unsigned bytes);
 int mus_audio_close(int line);
-int mus_audio_read(int line, char* buf, int bytes);
+int mus_audio_read(int line, char* buf, unsigned bytes);
 
-int mus_audio_write_buffers(int port, int frames, int chans, mus_sample_t** bufs, int output_format, bool clipped);
-int mus_audio_read_buffers(int port, int frames, int chans, mus_sample_t** bufs, int input_format);
+int mus_audio_write_buffers(int port, unsigned frames, unsigned chans, mus_sample_t** bufs, int output_format, bool clipped);
+int mus_audio_read_buffers(int port, unsigned frames, unsigned chans, mus_sample_t** bufs, int input_format);
 
 int mus_audio_mixer_read(int dev, int field, int chan, float* val);
 int mus_audio_mixer_write(int dev, int field, int chan, float* val);
@@ -612,7 +612,7 @@ char* strerror(int errnum);
 
 /* -------- io.c -------- */
 
-int mus_file_open_descriptors(int tfd, const char* name, int format, int size, off_t location, int chans, int type);
+int mus_file_open_descriptors(int tfd, const char* name, int format, unsigned size, off_t location, unsigned chans, int type);
 int mus_file_open_read(const char* arg);
 bool mus_file_probe(const char* arg);
 int mus_file_open_write(const char* arg);
@@ -620,14 +620,14 @@ int mus_file_create(const char* arg);
 int mus_file_reopen_write(const char* arg);
 int mus_file_close(int fd);
 off_t mus_file_seek_frame(int tfd, off_t frame);
-int mus_file_read(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
-int mus_file_read_chans(int tfd, int beg, int end, int chans, mus_sample_t** bufs, mus_sample_t** cm);
-int mus_file_write(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
-int mus_file_read_any(int tfd, int beg, int chans, int nints, mus_sample_t** bufs, mus_sample_t** cm);
-int mus_file_read_file(int tfd, int beg, int chans, int nints, mus_sample_t** bufs);
-int mus_file_read_buffer(int charbuf_data_format, int beg, int chans, int nints, mus_sample_t** bufs, char* charbuf);
-int mus_file_write_file(int tfd, int beg, int end, int chans, mus_sample_t** bufs);
-int mus_file_write_buffer(int charbuf_data_format, int beg, int end, int chans, mus_sample_t** bufs, char* charbuf, bool clipped);
+int mus_file_read(int tfd, int beg, int end, unsigned chans, mus_sample_t** bufs);
+int mus_file_read_chans(int tfd, int beg, int end, unsigned chans, mus_sample_t** bufs, mus_sample_t** cm);
+int mus_file_write(int tfd, int beg, int end, unsigned chans, mus_sample_t** bufs);
+int mus_file_read_any(int tfd, int beg, unsigned chans, unsigned nints, mus_sample_t** bufs, mus_sample_t** cm);
+int mus_file_read_file(int tfd, int beg, unsigned chans, unsigned nints, mus_sample_t** bufs);
+int mus_file_read_buffer(int charbuf_data_format, int beg, unsigned chans, unsigned nints, mus_sample_t** bufs, char* charbuf);
+int mus_file_write_file(int tfd, int beg, int end, unsigned chans, mus_sample_t** bufs);
+int mus_file_write_buffer(int charbuf_data_format, int beg, int end, unsigned chans, mus_sample_t** bufs, char* charbuf, bool clipped);
 char* mus_expand_filename(const char* filename);
 char* mus_getcwd(void);
 
@@ -639,7 +639,7 @@ int mus_file_set_clipping(int tfd, bool clipped);
 int mus_file_set_header_type(int tfd, int type);
 int mus_file_header_type(int tfd);
 char* mus_file_fd_name(int tfd);
-int mus_file_set_chans(int tfd, int chans);
+int mus_file_set_chans(int tfd, unsigned chans);
 
 Float mus_file_prescaler(int tfd);
 Float mus_file_set_prescaler(int tfd, Float val);
@@ -647,8 +647,10 @@ Float mus_prescaler(void);
 Float mus_set_prescaler(Float new_value);
 
 void mus_bint_to_char(unsigned char* j, int x);
+void mus_ubint_to_char(unsigned char* j, unsigned x);
 int mus_char_to_bint(const unsigned char* inp);
 void mus_lint_to_char(unsigned char* j, int x);
+void mus_ulint_to_char(unsigned char* j, unsigned x);
 int mus_char_to_lint(const unsigned char* inp);
 int mus_char_to_uninterpreted_int(const unsigned char* inp);
 void mus_bfloat_to_char(unsigned char* j, float x);
@@ -682,9 +684,9 @@ void mus_reset_audio_c(void);
 
 /* -------- headers.c -------- */
 
-off_t mus_header_samples(void);
+size_t mus_header_samples(void);
 off_t mus_header_data_location(void);
-int mus_header_chans(void);
+unsigned mus_header_chans(void);
 int mus_header_srate(void);
 int mus_header_type(void);
 int mus_header_format(void);
@@ -701,14 +703,14 @@ int mus_header_mark_position(int id);
 int mus_header_base_note(void);
 int mus_header_base_detune(void);
 void mus_header_set_raw_defaults(int sr, int chn, int frm);
-void mus_header_raw_defaults(int* sr, int* chn, int* frm);
+void mus_header_raw_defaults(int* sr, unsigned* chn, int* frm);
 off_t mus_header_true_length(void);
 int mus_header_original_format(void);
-off_t mus_samples_to_bytes(int format, off_t size);
+size_t mus_samples_to_bytes(int format, size_t size);
 off_t mus_bytes_to_samples(int format, off_t size);
-int mus_header_write_next_header(int chan, int wsrate, int wchans, int loc, int siz, int format, const char* comment, int len);
+int mus_header_write_next_header(int chan, int wsrate, unsigned wchans, int loc, int siz, int format, const char* comment, int len);
 int mus_header_read(const char* name);
-int mus_header_write(const char* name, int type, int in_srate, int in_chans, off_t loc, off_t size_in_samples, int format,
+int mus_header_write(const char* name, int type, int in_srate, unsigned in_chans, off_t loc, size_t size_in_samples, int format,
                      const char* comment, int len);
 off_t mus_header_aux_comment_start(int n);
 off_t mus_header_aux_comment_end(int n);
@@ -727,7 +729,7 @@ bool mus_header_no_header(const char* filename);
 char* mus_header_riff_aux_comment(const char* name, off_t* starts, off_t* ends);
 char* mus_header_aiff_aux_comment(const char* name, off_t* starts, off_t* ends);
 
-int mus_header_change_chans(const char* filename, int type, int new_chans);
+int mus_header_change_chans(const char* filename, int type, unsigned new_chans);
 int mus_header_change_srate(const char* filename, int type, int new_srate);
 int mus_header_change_type(const char* filename, int new_type, int new_format);
 int mus_header_change_format(const char* filename, int type, int new_format);

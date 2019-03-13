@@ -27,11 +27,11 @@
    position pointer at the end of the header.
    On failure, returns -1. Caller can check errno then.
 */
-int sndlib_create(char* sfname, /* file name */
-                  int type,     /* file type, e.g. AIFF */
-                  int format,   /* data format, e.g., MU-LAW */
-                  int srate,    /* sampling rate in Hz */
-                  int chans,    /* 1 for mono, 2 for stereo */
+int sndlib_create(char* sfname,   /* file name */
+                  int type,       /* file type, e.g. AIFF */
+                  int format,     /* data format, e.g., MU-LAW */
+                  int srate,      /* sampling rate in Hz */
+                  unsigned chans, /* 1 for mono, 2 for stereo */
                   char* comment)
 {
     MUS_UNUSED(comment);
@@ -52,9 +52,10 @@ void* calloc(size_t nmemb, size_t size);
    Returns an array of <nchans> arrays of <nframes> integers. The memory
    is cleared. If the return value is NULL, check errno.
 */
-int** sndlib_allocate_buffers(int nchans, int nframes)
+int** sndlib_allocate_buffers(unsigned nchans, unsigned nframes)
 {
-    int **bufs, n;
+    int** bufs;
+    unsigned n;
 
     assert(nchans > 0 && nframes > 0);
 
@@ -80,9 +81,9 @@ void free(void* ptr);
 /* ---------------------------------------------- sndlib_free_buffers --- */
 /* Free the multi-dimensional array <bufs> with <nchans> elements.
  */
-void sndlib_free_buffers(int** bufs, int nchans)
+void sndlib_free_buffers(int** bufs, unsigned nchans)
 {
-    int n;
+    unsigned n;
 
     assert(bufs != NULL);
 

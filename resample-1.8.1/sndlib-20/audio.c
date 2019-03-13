@@ -20,11 +20,11 @@
  * void mus_audio_describe(void) describes the audio hardware state.
  * char *mus_audio_report(void) returns the same information as a string.
  *
- * int mus_audio_open_output(int dev, int srate, int chans, int format, int size)
- * int mus_audio_open_input(int dev, int srate, int chans, int format, int size)
- * int mus_audio_write(int line, char *buf, int bytes)
+ * int mus_audio_open_output(int dev, int srate, unsigned chans, int format, int size)
+ * int mus_audio_open_input(int dev, int srate, unsigned chans, int format, int size)
+ * int mus_audio_write(int line, char *buf, unsigned bytes)
  * int mus_audio_close(int line)
- * int mus_audio_read(int line, char *buf, int bytes)
+ * int mus_audio_read(int line, char *buf, unsigned bytes)
  *
  * int mus_audio_mixer_read(int dev, int field, int chan, float *val)
  * int mus_audio_mixer_write(int dev, int field, int chan, float *val)
@@ -485,7 +485,7 @@ static int to_sgi_format(int frm)
     return (MUS_ERROR);
 }
 
-int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int requested_size)
+int mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int requested_size)
 {
 #ifdef AL_RESOURCE
     ALpv z[2];
@@ -596,7 +596,7 @@ int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int requ
     return (line);
 }
 
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     start_sgi_print();
 #ifdef AL_RESOURCE
@@ -627,7 +627,7 @@ int mus_audio_close(int line)
     return (MUS_NO_ERROR);
 }
 
-int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int requested_size)
+int mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int requested_size)
 {
     int dev;
 #ifdef AL_RESOURCE
@@ -734,7 +734,7 @@ int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int reque
     return (line);
 }
 
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     start_sgi_print();
 #ifdef AL_RESOURCE
@@ -1870,7 +1870,7 @@ static char* sonorus_name(int sys, int offset)
 
 static bool fragment_set_failed = false;
 
-static int oss_mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size)
+static int oss_mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     /* ur_dev is in general MUS_AUDIO_PACK_SYSTEM(n) | MUS_AUDIO_DEVICE */
     int oss_format, buffer_info, audio_out = -1, sys, dev;
@@ -2090,7 +2090,7 @@ static char* oss_unsrc(int srcbit)
     }
 }
 
-static int oss_mus_audio_open_input(int ur_dev, int srate, int chans, int format, int requested_size)
+static int oss_mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int requested_size)
 {
     /* dev can be MUS_AUDIO_DEFAULT or MUS_AUDIO_DUPLEX_DEFAULT as well as the obvious others */
     int audio_fd = -1, oss_format, buffer_info, sys, dev, srcbit, cursrc, err;
@@ -3685,8 +3685,8 @@ static void (*vect_mus_oss_set_buffers)(int num, int size);
 static int (*vect_mus_audio_systems)(void);
 static char* (*vect_mus_audio_system_name)(int system);
 static char* (*vect_mus_audio_moniker)(void);
-static int (*vect_mus_audio_open_output)(int ur_dev, int srate, int chans, int format, int size);
-static int (*vect_mus_audio_open_input)(int ur_dev, int srate, int chans, int format, int requested_size);
+static int (*vect_mus_audio_open_output)(int ur_dev, int srate, unsigned chans, int format, int size);
+static int (*vect_mus_audio_open_input)(int ur_dev, int srate, unsigned chans, int format, int requested_size);
 static int (*vect_mus_audio_write)(int id, char* buf, int bytes);
 static int (*vect_mus_audio_read)(int id, char* buf, int bytes);
 static int (*vect_mus_audio_close)(int id);
@@ -3734,22 +3734,22 @@ const char* mus_audio_moniker(void)
 #endif
 }
 
-int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     return (vect_mus_audio_open_output(ur_dev, srate, chans, format, size));
 }
 
-int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int requested_size)
+int mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int requested_size)
 {
     return (vect_mus_audio_open_input(ur_dev, srate, chans, format, requested_size));
 }
 
-int mus_audio_write(int id, char* buf, int bytes)
+int mus_audio_write(int id, char* buf, unsigned bytes)
 {
     return (vect_mus_audio_write(id, buf, bytes));
 }
 
-int mus_audio_read(int id, char* buf, int bytes)
+int mus_audio_read(int id, char* buf, unsigned bytes)
 {
     return (vect_mus_audio_read(id, buf, bytes));
 }
@@ -3902,8 +3902,8 @@ static int alsa_mus_audio_initialize(void);
 static void alsa_mus_oss_set_buffers(int num, int size);
 static int alsa_mus_audio_systems(void);
 static char* alsa_mus_audio_system_name(int system);
-static int alsa_mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size);
-static int alsa_mus_audio_open_input(int ur_dev, int srate, int chans, int format, int requested_size);
+static int alsa_mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size);
+static int alsa_mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int requested_size);
 static int alsa_mus_audio_write(int id, char* buf, int bytes);
 static int alsa_mus_audio_read(int id, char* buf, int bytes);
 static int alsa_mus_audio_close(int id);
@@ -4844,7 +4844,7 @@ static int alsa_mus_audio_initialize(void)
 
 /* open an input or output stream */
 
-static int alsa_audio_open(int ur_dev, int srate, int chans, int format, int size)
+static int alsa_audio_open(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     int card, device, alsa_device;
     snd_pcm_format_t alsa_format;
@@ -5037,14 +5037,14 @@ total requested buffer size is %d frames, minimum allowed is %d, maximum is %d",
 
 /* sndlib support for opening output devices */
 
-static int alsa_mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size)
+static int alsa_mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     return (alsa_audio_open(ur_dev, srate, chans, format, size));
 }
 
 /* sndlib support for opening input devices */
 
-static int alsa_mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
+static int alsa_mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     return (alsa_audio_open(ur_dev, srate, chans, format, size));
 }
@@ -5575,7 +5575,7 @@ static int to_sun_format(int format)
     return (MUS_ERROR);
 }
 
-int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     struct audio_info info;
     char* dev_name;
@@ -5636,7 +5636,7 @@ int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size
     return (audio_fd);
 }
 
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     if(write(line, buf, bytes) != bytes)
         RETURN_ERROR_EXIT(MUS_AUDIO_WRITE_ERROR, -1, mus_format("write error: %s", strerror(errno)));
@@ -5650,7 +5650,7 @@ int mus_audio_close(int line)
     return (MUS_NO_ERROR);
 }
 
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     int total = 0;
     char* curbuf;
@@ -5681,7 +5681,7 @@ int mus_audio_read(int line, char* buf, int bytes)
     return (MUS_NO_ERROR);
 }
 
-int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     struct audio_info info;
     int indev, encode, bits, dev, audio_fd, err;
@@ -6414,7 +6414,7 @@ DWORD CALLBACK next_buffer(HWAVEOUT w, UINT msg, DWORD user_data, DWORD p1, DWOR
     return (0);
 }
 
-int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     WAVEFORMATEX wf;
     int dev;
@@ -6518,7 +6518,7 @@ static void wait_for_empty_buffer(int buf)
     }
 }
 
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     int lim, leftover, start;
     start_win_print();
@@ -7157,7 +7157,7 @@ DWORD CALLBACK next_input_buffer(HWAVEIN w, UINT msg, DWORD user_data, DWORD p1,
     return (0);
 }
 
-int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     WAVEFORMATEX wf;
     int dev;
@@ -7205,7 +7205,7 @@ int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
     return (MUS_NO_ERROR);
 }
 
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     win_in_err = 0;
     return (MUS_ERROR);
@@ -7623,7 +7623,7 @@ static unsigned int bufsize = 0, current_bufsize = 0;
  *   for non-integer srate conversion anyway, and the rest is trivial.
  */
 
-int mus_audio_open_output(int dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int dev, int srate, unsigned chans, int format, int size)
 {
     OSStatus err = noErr;
     UInt32 sizeof_device, sizeof_format, sizeof_bufsize;
@@ -7838,7 +7838,7 @@ static void convert_incoming(char* to_buf, int fill_point, int lim, char* buf)
     }
 }
 
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     OSStatus err = noErr;
     int lim, bp, out_bytes;
@@ -7900,7 +7900,7 @@ int mus_audio_write(int line, char* buf, int bytes)
     return (MUS_NO_ERROR);
 }
 
-int mus_audio_open_input(int dev, int srate, int chans, int format, int size)
+int mus_audio_open_input(int dev, int srate, unsigned chans, int format, int size)
 {
     OSStatus err = noErr;
     UInt32 sizeof_device;
@@ -7948,7 +7948,7 @@ int mus_audio_open_input(int dev, int srate, int chans, int format, int size)
     return (MUS_NO_ERROR);
 }
 
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     OSStatus err = noErr;
     int bp;
@@ -8242,7 +8242,7 @@ static int to_esd_format(int snd_format)
     return MUS_ERROR;
 }
 
-int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     int esd_prop = ESD_STREAM;
     int esd_format;
@@ -8267,7 +8267,7 @@ int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size
         return esd_play_sock;
 }
 
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     int written;
     char* to = buf;
@@ -8314,7 +8314,7 @@ int mus_audio_close(int line)
     return MUS_NO_ERROR;
 }
 
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     int bytes_read;
 
@@ -8331,7 +8331,7 @@ int mus_audio_read(int line, char* buf, int bytes)
     return MUS_NO_ERROR;
 }
 
-int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     int esd_prop = ESD_STREAM;
     int esd_format;
@@ -8894,8 +8894,8 @@ static void jack_mus_oss_set_buffers(int num, int size);
 static int jack_mus_audio_systems(void);
 static char* jack_mus_audio_system_name(int system);
 static char* jack_mus_audio_moniker(void);
-static int jack_mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size);
-static int jack_mus_audio_open_input(int ur_dev, int srate, int chans, int format, int requested_size);
+static int jack_mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size);
+static int jack_mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int requested_size);
 static int jack_mus_audio_write(int id, char* buf, int bytes);
 static int jack_mus_audio_read(int id, char* buf, int bytes);
 static int jack_mus_audio_close(int id);
@@ -9064,7 +9064,7 @@ static void jack_mus_audio_set_non_realtime(void)
     jack_mus_isrunning = 0;
 }
 
-int jack_mus_audio_open_output(int dev, int srate, int chans, int format, int size)
+int jack_mus_audio_open_output(int dev, int srate, unsigned chans, int format, int size)
 {
     if(sndjack_client == NULL)
     {
@@ -9251,7 +9251,7 @@ int jack_mus_audio_mixer_write(int dev, int field, int chan, float* val)
     return (MUS_NO_ERROR);
 }
 
-int jack_mus_audio_open_input(int dev, int srate, int chans, int format, int size)
+int jack_mus_audio_open_input(int dev, int srate, unsigned chans, int format, int size)
 {
     if(sndjack_client == NULL)
     {
@@ -9371,7 +9371,7 @@ const char* mus_audio_moniker(void)
     return ("HPUX audio");
 }
 
-int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     int fd, i, dev;
     struct audio_describe desc;
@@ -9406,7 +9406,7 @@ int mus_audio_open_output(int ur_dev, int srate, int chans, int format, int size
     return (fd);
 }
 
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     write(line, buf, bytes);
     return (MUS_NO_ERROR);
@@ -9657,7 +9657,7 @@ const char* mus_audio_system_name(int system)
  * not_busy = (status_b.transmit_status == AUDIO_DONE);
  */
 
-int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     int fd, i, dev;
     struct audio_describe desc;
@@ -9691,7 +9691,7 @@ int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
     return (fd);
 }
 
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     read(line, buf, bytes);
     return (MUS_NO_ERROR);
@@ -9785,7 +9785,7 @@ const char* mus_audio_moniker(void)
 
 static int cur_chans = 1, cur_srate = 22050;
 
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     /* trouble... AUDIO_WSEEK always returns 0, no way to tell that I'm about to
      *   hit "hiwat", but when I do, it hangs.  Can't use AUDIO_DRAIN --
@@ -9827,7 +9827,7 @@ void mus_netbsd_set_outputs(int speakers, int headphones, int line_out)
         netbsd_default_outputs |= AUDIO_LINE_OUT;
 }
 
-int mus_audio_open_output(int dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int dev, int srate, unsigned chans, int format, int size)
 {
     int line, encode;
     audio_info_t a_info;
@@ -9879,7 +9879,7 @@ int mus_audio_open_output(int dev, int srate, int chans, int format, int size)
     return (line);
 }
 
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     read(line, buf, bytes);
     return (MUS_NO_ERROR);
@@ -10163,7 +10163,7 @@ int mus_audio_mixer_write(int ur_dev, int field, int chan, float* val)
     return (mus_audio_close(audio_fd));
 }
 
-int mus_audio_open_input(int ur_dev, int srate, int chans, int format, int size)
+int mus_audio_open_input(int ur_dev, int srate, unsigned chans, int format, int size)
 {
     audio_info_t info;
     int encode, bits, dev, audio_fd, err;
@@ -10203,15 +10203,15 @@ static void describe_audio_state_1(void)
 {
     pprint("audio stubbed out");
 }
-int mus_audio_open_output(int dev, int srate, int chans, int format, int size)
+int mus_audio_open_output(int dev, int srate, unsigned chans, int format, int size)
 {
     return (MUS_ERROR);
 }
-int mus_audio_open_input(int dev, int srate, int chans, int format, int size)
+int mus_audio_open_input(int dev, int srate, unsigned chans, int format, int size)
 {
     return (MUS_ERROR);
 }
-int mus_audio_write(int line, char* buf, int bytes)
+int mus_audio_write(int line, char* buf, unsigned bytes)
 {
     return (MUS_ERROR);
 }
@@ -10219,7 +10219,7 @@ int mus_audio_close(int line)
 {
     return (MUS_ERROR);
 }
-int mus_audio_read(int line, char* buf, int bytes)
+int mus_audio_read(int line, char* buf, unsigned bytes)
 {
     return (MUS_ERROR);
 }
@@ -10251,12 +10251,12 @@ const char* mus_audio_moniker(void)
 
 static char* save_it = NULL;
 static int print_it = 1;
-static int save_it_len = 0;
-static int save_it_loc = 0;
+static size_t save_it_len = 0;
+static size_t save_it_loc = 0;
 
 static void pprint(const char* str)
 {
-    int i, len;
+    size_t i, len;
     if((str) && (*str))
     {
         if((print_it) || (!(save_it)))
@@ -10265,9 +10265,9 @@ static void pprint(const char* str)
         } else
         {
             len = strlen(str);
-            if((len + save_it_loc + 2) >= save_it_len)
+            if((len + save_it_loc + 2u) >= save_it_len)
             {
-                save_it_len = (len + save_it_loc + 1024);
+                save_it_len = (len + save_it_loc + 1024u);
                 save_it = (char*)REALLOC(save_it, save_it_len * sizeof(char));
             }
             for(i = 0; i < len; i++)
@@ -10345,35 +10345,35 @@ int mus_audio_compatible_format(int dev)
 
 /* next two added 17-Dec-02 for non-interleaved audio IO */
 static char* output_buffer = NULL;
-static int output_buffer_size = 0;
+static unsigned output_buffer_size = 0;
 
-int mus_audio_write_buffers(int port, int frames, int chans, mus_sample_t** bufs, int output_format, bool clipped)
+int mus_audio_write_buffers(int port, unsigned frames, unsigned chans, mus_sample_t** bufs, int output_format, bool clipped)
 {
-    int bytes;
+    unsigned bytes;
     bytes = chans * frames * mus_bytes_per_sample(output_format);
     if(output_buffer_size < bytes)
     {
         if(output_buffer)
             free(output_buffer);
-        output_buffer = (char*)malloc(bytes);
+        output_buffer = (char*)malloc((size_t)bytes);
         output_buffer_size = bytes;
     }
-    mus_file_write_buffer(output_format, 0, frames - 1, chans, bufs, output_buffer, clipped);
+    mus_file_write_buffer(output_format, 0, (int)frames - 1, chans, bufs, output_buffer, clipped);
     return (mus_audio_write(port, output_buffer, bytes));
 }
 
 static char* input_buffer = NULL;
-static int input_buffer_size = 0;
+static unsigned input_buffer_size = 0;
 
-int mus_audio_read_buffers(int port, int frames, int chans, mus_sample_t** bufs, int input_format)
+int mus_audio_read_buffers(int port, unsigned frames, unsigned chans, mus_sample_t** bufs, int input_format)
 {
-    int bytes;
+    unsigned bytes;
     bytes = chans * frames * mus_bytes_per_sample(input_format);
     if(input_buffer_size < bytes)
     {
         if(input_buffer)
             free(input_buffer);
-        input_buffer = (char*)malloc(bytes);
+        input_buffer = (char*)malloc((size_t)bytes);
         input_buffer_size = bytes;
     }
     mus_audio_read(port, input_buffer, bytes);

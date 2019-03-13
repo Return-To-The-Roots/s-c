@@ -65,7 +65,6 @@
 #cmakedefine01 MUS_HAVE_VAR_LIB_OSS
 #cmakedefine01 HAVE_LIBC_H
 #cmakedefine01 HAVE_ALSA_ASOUNDLIB_H
-#cmakedefine01 HAVE_BYTESWAP_H
 #cmakedefine01 HAVE_STDINT_H
 
 #define SIZEOF_OFF_T @SIZEOF_OFF_T@

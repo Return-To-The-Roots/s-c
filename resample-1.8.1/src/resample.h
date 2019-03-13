@@ -74,7 +74,7 @@ int resample(                        /* number of output sample returned */
              int infd,               /* input and output file descriptors */
              int outfd, int inCount, /* number of input samples to convert */
              int outCount,           /* number of output samples to compute */
-             int nChans,             /* number of sound channels (1 or 2) */
+             unsigned nChans,        /* number of sound channels (1 or 2) */
              BOOL interpFilt,        /* TRUE means interpolate filter coeffs */
              int fastMode,           /* 0 = highest quality, slowest speed */
              BOOL largeFilter,       /* TRUE means use 65-tap FIR filter */

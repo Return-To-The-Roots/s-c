@@ -430,7 +430,7 @@ WORD FilterUD(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, H
     UWORD Ho;
 
     v = 0;
-    Ho = (Ph * (UWORD)dhb) >> Np;
+    Ho = ((UWORD)Ph * (UWORD)dhb) >> Np;
     End = &Imp[Nwing];
     if(Inc == 1)       /* If doing right wing...              */
     {                  /* ...drop extra coeff, so when Ph is  */
@@ -538,7 +538,7 @@ double zerox(HWORD* Data, double Factor)
         hi = -1.0;
     }
     dh = (Factor < 1) ? (Factor * Npc) : (Npc);
-    dhb = (int)(dh * (1 << Na) + 0.5);
+    dhb = (UWORD)(dh * (1 << Na) + 0.5);
 
     for(i = 0; i < MAXITER; i++)
     {
