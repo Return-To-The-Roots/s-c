@@ -1,16 +1,17 @@
 
 cmake_minimum_required(VERSION 3.8)
-PROJECT(resample-1.8.1)
+project(resample-1.8.1)
 
 ################################################################################
 
-IF(MSVC)
-	ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
-	ADD_DEFINITIONS(/W2)
-	ADD_DEFINITIONS(/wd"4244") # conversion double to x
+if(MSVC)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	add_compile_options(/W2)
+	add_compile_options(/wd"4244") # conversion double to x
 ELSE()
-	add_compile_options("-std=c99")
+	set(CMAKE_C_STANDARD 11)
+	set(CMAKE_C_STANDARD_REQUIRED ON)
 ENDIF()
 
-ADD_SUBDIRECTORY( sndlib-20 )
-ADD_SUBDIRECTORY( src )
+add_subdirectory( sndlib-20 )
+add_subdirectory( src )
