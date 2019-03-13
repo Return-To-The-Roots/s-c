@@ -96,14 +96,20 @@
 #define MUS_INT_TO_SAMPLE(n) ((mus_sample_t)(n))
 #define MUS_SAMPLE_TO_INT(n) ((int)(n))
 /* these are for direct read/write (no cross-image assumption is made about 32 bit int scaling) */
-static const int MUS_FLOAT_TO_FIX = (MUS_SAMPLE_BITS < 32) ? (1 << (MUS_SAMPLE_BITS - 1)) : 0x7fffffff;
+#if MUS_SAMPLE_BITS < 32
+#define MUS_FLOAT_TO_FIX (1 << (MUS_SAMPLE_BITS - 1))
+#define MUS_SAMPLE_MAX ((mus_sample_t)(MUS_FLOAT_TO_FIX - 1))
+#define MUS_SAMPLE_MIN ((mus_sample_t)(-(MUS_FLOAT_TO_FIX)))
+#else
+#define MUS_FLOAT_TO_FIX 0x7fffffff
+#define MUS_SAMPLE_MAX = ((mus_sample_t)0x7fffffff)
+#define MUS_SAMPLE_MIN = ((mus_sample_t)-0x7fffffff)
+#endif
 #define MUS_FIX_TO_FLOAT (1.0 / (float)(MUS_FLOAT_TO_FIX))
 #define MUS_FLOAT_TO_SAMPLE(n) ((mus_sample_t)((n)*MUS_FLOAT_TO_FIX))
 #define MUS_SAMPLE_TO_FLOAT(n) ((float)((n)*MUS_FIX_TO_FLOAT))
 #define MUS_DOUBLE_TO_SAMPLE(n) ((mus_sample_t)((n)*MUS_FLOAT_TO_FIX))
 #define MUS_SAMPLE_TO_DOUBLE(n) ((double)((n)*MUS_FIX_TO_FLOAT))
-static const mus_sample_t MUS_SAMPLE_MAX = (mus_sample_t)((MUS_SAMPLE_BITS < 32) ? (MUS_FLOAT_TO_FIX - 1) : 0x7fffffff);
-static const mus_sample_t MUS_SAMPLE_MIN = (mus_sample_t)((MUS_SAMPLE_BITS < 32) ? (-(MUS_FLOAT_TO_FIX)) : -0x7fffffff);
 #define mus_sample_abs(Sample) abs(Sample)
 #else
 #define mus_sample_t Float

@@ -81,9 +81,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#if HAVE_STRING_H
 #include <string.h>
-#endif
 #if HAVE_LIBC_H && !HAVE_UNISTD_H
 #include <libc.h>
 #else
@@ -96,7 +94,6 @@
 #define strdup _strdup
 #else
 #include <unistd.h>
-extern char* strdup(const char* s);
 #endif
 #endif
 
@@ -3776,7 +3773,7 @@ static int read_file_samp_header(const char* filename, int chan)
         if(i + 6 < 1024 && strncmp(locbuf + i, "sftot", 5) == 0)
             sscanf(&locbuf[i + 6], "%d", &srate);
         if(i + 7 < 1024 && strncmp(locbuf + i, "nchans", 6) == 0)
-            sscanf(&locbuf[i + 7], "%d", &chans);
+            sscanf(&locbuf[i + 7], "%u", &chans);
         if(strncmp(locbuf + i, "msb", 3) == 0)
             if(i + 9 < 1024 && strncmp(locbuf + i + 4, "first", 5) == 0)
                 data_format = MUS_BSHORT;
@@ -4413,7 +4410,7 @@ static int read_pvf_header(const char* filename, int chan)
         return (mus_error(MUS_HEADER_READ_FAILED, "PVF header messed up"));
     type_specifier = mus_char_to_uninterpreted_int((unsigned char*)hdrbuf);
     buf = (char*)(hdrbuf + 5);
-    sscanf(buf, "%d %d %d", &chans, &srate, &bits);
+    sscanf(buf, "%u %d %d", &chans, &srate, &bits);
     if(chans < 1)
         chans = 1;
     if(srate < 0)

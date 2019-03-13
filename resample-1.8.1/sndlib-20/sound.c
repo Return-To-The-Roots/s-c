@@ -28,9 +28,7 @@
 #else
 #include <unistd.h>
 #endif
-#if HAVE_STRING_H
 #include <string.h>
-#endif
 #endif
 
 #include "sndlib-strings.h"
@@ -38,8 +36,6 @@
 
 #ifdef _MSC_VER
 #define strdup _strdup
-#else
-extern char* strdup(const char* s);
 #endif
 
 void* mus_realloc(void* ptr, size_t size)

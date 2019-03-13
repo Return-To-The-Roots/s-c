@@ -8,7 +8,7 @@
 #include <string.h>
 
 #define IBUFFSIZE 4096 /* Input buffer size */
-#define OBUFFSIZE (int)(IBUFFSIZE * 10 + 2.0)
+#define OBUFFSIZE (IBUFFSIZE * 10 + 2)
 
 #include "largefilter.h"
 #include "smallfilter.h"

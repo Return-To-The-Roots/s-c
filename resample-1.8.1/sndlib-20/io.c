@@ -42,10 +42,8 @@
 #include <unistd.h>
 #endif
 #endif
-#if HAVE_STRING_H
-#include <string.h>
-#endif
 #include <stdarg.h>
+#include <string.h>
 
 #include "sndlib.h"
 
@@ -61,8 +59,6 @@
 #define write _write
 #define strdup _strdup
 #define getcwd _getcwd
-#else
-extern char* strdup(const char* s);
 #endif
 
 /* data translations for big/little endian machines

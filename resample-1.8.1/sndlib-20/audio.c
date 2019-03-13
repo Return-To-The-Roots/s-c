@@ -89,9 +89,7 @@
 #include <unistd.h>
 #endif
 #endif
-#if HAVE_STRING_H
 #include <string.h>
-#endif
 
 #if HAVE_SAM_9407
 #include <sys/sam9407.h>

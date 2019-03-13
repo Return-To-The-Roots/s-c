@@ -53,7 +53,6 @@
 
 #cmakedefine01 HAVE_FCNTL_H
 #cmakedefine01 HAVE_LIMITS_H
-#cmakedefine01 HAVE_STRING_H
 #cmakedefine01 HAVE_UNISTD_H
 #cmakedefine01 HAVE_STDBOOL_H
 #cmakedefine01 HAVE_SYS_SOUNDCARD_H

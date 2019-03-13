@@ -16,7 +16,6 @@ include (CheckTypeSize)
 
 # We just assume all compilers have this to avoid the checks
 set(HAVE_LIMITS_H 1)
-set(HAVE_STRING_H 1)
 set(HAVE_STDBOOL_H 1)
 set(HAVE_STDINT_H 1)
 

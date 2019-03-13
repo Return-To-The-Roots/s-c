@@ -29,6 +29,7 @@ Report bugs to <bug-resample@w3k.org>.\n\n\
 
 #include <errno.h>
 #include <math.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdnoreturn.h>
