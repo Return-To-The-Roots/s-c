@@ -911,15 +911,7 @@ int mus_sound_close_output(int fd, off_t bytes_of_data)
     return (MUS_ERROR);
 }
 
-typedef enum
-{
-    SF_CHANS,
-    SF_SRATE,
-    SF_TYPE,
-    SF_FORMAT,
-    SF_LOCATION,
-    SF_SIZE
-} sf_field_t;
+typedef enum { SF_CHANS, SF_SRATE, SF_TYPE, SF_FORMAT, SF_LOCATION, SF_SIZE } sf_field_t;
 
 static int mus_sound_set_field(const char* arg, sf_field_t field, int val)
 {

@@ -1327,7 +1327,7 @@ static int read_aiff_header(const char* filename, int chan, int overall_offset)
         chunkloc = (8 + chunksize);
         if(chunksize & 1)
             chunkloc++; /* extra null appended to odd-length chunks */
-        if((offset + chunkloc) >= (off_t)update_form_size)
+        if((offset + (off_t)chunkloc) >= (off_t)update_form_size)
             happy = false;
     }
     if(!got_comm)
@@ -1340,7 +1340,7 @@ static int read_aiff_header(const char* filename, int chan, int overall_offset)
         if(data_size < 0)
             return (mus_error(MUS_HEADER_READ_FAILED, "%s: data_size = %d?", filename, (int)data_size));
     }
-    if((data_size > ssnd_bytes) && (data_format != MUS_UNKNOWN))
+    if((data_size > (off_t)ssnd_bytes) && (data_format != MUS_UNKNOWN))
         data_size = ssnd_bytes;
     data_size = mus_bytes_to_samples(data_format, data_size);
     return (MUS_NO_ERROR);
