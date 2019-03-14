@@ -47,7 +47,13 @@ noreturn static void fail(const char* s)
     exit(1); /* Exit, indicating error */
 }
 
-static __attribute__((format(printf, 1, 2))) noreturn void fails(const char* s, ...)
+#ifdef __GNUC__
+#define FORMAT_ATTR __attribute__((format(printf, 1, 2)))
+#else
+#define FORMAT_ATTR
+#endif
+
+static FORMAT_ATTR noreturn void fails(const char* s, ...)
 {
     printf("resample: "); /* Display error message  */
     va_list ap;

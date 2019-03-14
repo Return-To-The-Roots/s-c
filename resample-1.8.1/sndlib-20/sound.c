@@ -407,12 +407,15 @@ int mus_sound_forget(const char* name)
     }
     previous_sf = NULL;
     for(i = 0; i < sound_table_size; i++)
-        if((sound_table[i])
-           && ((strcmp(name, sound_table[i]->file_name) == 0) || ((short_name) && (strcmp(short_name, sound_table[i]->file_name) == 0))))
+    {
+        if(!sound_table[i])
+            continue;
+        if((strcmp(name, sound_table[i]->file_name) == 0) || ((short_name) && (strcmp(short_name, sound_table[i]->file_name) == 0)))
         {
             free_sound_file(sound_table[i]);
             sound_table[i] = NULL;
         }
+    }
     if(free_name)
         FREE(free_name);
     return (MUS_NO_ERROR);
@@ -806,7 +809,7 @@ char* mus_sound_comment(const char* name)
     if(len > 0)
     {
         /* open and get the comment */
-        ssize_t bytes;
+        int bytes;
         size_t full_len;
         fd = mus_file_open_read(name);
         if(fd == -1)
@@ -908,7 +911,15 @@ int mus_sound_close_output(int fd, off_t bytes_of_data)
     return (MUS_ERROR);
 }
 
-typedef enum { SF_CHANS, SF_SRATE, SF_TYPE, SF_FORMAT, SF_LOCATION, SF_SIZE } sf_field_t;
+typedef enum
+{
+    SF_CHANS,
+    SF_SRATE,
+    SF_TYPE,
+    SF_FORMAT,
+    SF_LOCATION,
+    SF_SIZE
+} sf_field_t;
 
 static int mus_sound_set_field(const char* arg, sf_field_t field, int val)
 {

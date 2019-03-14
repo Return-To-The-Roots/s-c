@@ -5110,7 +5110,7 @@ static int recover_from_xrun(int id)
 static int alsa_mus_audio_write(int id, char* buf, int bytes)
 {
     snd_pcm_sframes_t status;
-    ssize_t frames;
+    int frames;
     frames = snd_pcm_bytes_to_frames(handles[id], bytes);
 #if MUS_DEBUGGING
     if((frames <= 0) || (frames > bytes))
@@ -5145,7 +5145,7 @@ static int alsa_mus_audio_write(int id, char* buf, int bytes)
 static int alsa_mus_audio_read(int id, char* buf, int bytes)
 {
     snd_pcm_sframes_t status;
-    ssize_t frames;
+    int frames;
     frames = snd_pcm_bytes_to_frames(handles[id], bytes);
 #if MUS_DEBUGGING
     if((frames <= 0) || (frames > bytes))

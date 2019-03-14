@@ -8,6 +8,7 @@
 */
 #include "sndlibextra.h"
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* #define NDEBUG */ /* define to disable asserts */
@@ -45,8 +46,6 @@ int sndlib_create(char* sfname,   /* file name */
     return fd;
 }
 
-void* calloc(size_t nmemb, size_t size);
-
 /* ------------------------------------------ sndlib_allocate_buffers --- */
 /* Allocate the multi-dimensional array required by sndlib I/O functions.
    Returns an array of <nchans> arrays of <nframes> integers. The memory
@@ -75,8 +74,6 @@ int** sndlib_allocate_buffers(unsigned nchans, unsigned nframes)
 
     return bufs;
 }
-
-void free(void* ptr);
 
 /* ---------------------------------------------- sndlib_free_buffers --- */
 /* Free the multi-dimensional array <bufs> with <nchans> elements.

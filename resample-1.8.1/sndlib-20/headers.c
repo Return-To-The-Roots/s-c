@@ -2327,7 +2327,7 @@ static int read_soundfont_header(const char* filename, int chan)
                 lseek(chan, ckoff, SEEK_SET);
                 while(srate == 0)
                 {
-                    ssize_t bytes;
+                    int bytes;
                     bytes = read(chan, hdrbuf, 8);
                     if(bytes == 0)
                     {
