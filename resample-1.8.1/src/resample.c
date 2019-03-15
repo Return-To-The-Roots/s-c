@@ -32,9 +32,13 @@ Report bugs to <bug-resample@w3k.org>.\n\n\
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifdef __GNUC__
+#include <stdnoreturn.h>
+#else
+#define noreturn
+#endif
 
 static int trace = 1; /* controls verbosity of output */
 
