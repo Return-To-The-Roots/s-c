@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
         if(sNumber == "empty")
         {
             bnw::cout << "Inserting empty item at line " << linenr << "" << std::endl;
-            output.push(NULL);
+            output.push(nullptr);
             continue;
         }
 
