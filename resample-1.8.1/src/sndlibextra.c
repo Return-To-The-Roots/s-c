@@ -33,7 +33,7 @@ int sndlib_create(char* sfname,   /* file name */
                   int format,     /* data format, e.g., MU-LAW */
                   int srate,      /* sampling rate in Hz */
                   unsigned chans, /* 1 for mono, 2 for stereo */
-                  char* comment)
+                  const char* comment)
 {
     MUS_UNUSED(comment);
     int fd;

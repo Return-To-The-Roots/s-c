@@ -1559,7 +1559,7 @@ static int write_aif_header(int chan, int wsrate, unsigned wchans, unsigned siz,
     return (MUS_NO_ERROR);
 }
 
-char* mus_header_aiff_aux_comment(const char* name, off_t* starts, off_t* ends)
+char* mus_header_aiff_aux_comment(const char* name, const off_t* starts, const off_t* ends)
 {
     /* AIFC: look for aux comments (ANNO chunks) */
     char* sc = NULL;
@@ -1959,7 +1959,7 @@ static int write_riff_header(int chan, int wsrate, unsigned wchans, int siz, int
     return (MUS_NO_ERROR);
 }
 
-char* mus_header_riff_aux_comment(const char* name, off_t* starts, off_t* ends)
+char* mus_header_riff_aux_comment(const char* name, const off_t* starts, const off_t* ends)
 {
     char *sc = NULL, *auxcom;
     if((starts) && (starts[0] != 0))
@@ -2443,7 +2443,7 @@ static int read_soundfont_header(const char* filename, int chan)
 
 #define MAX_FIELD_LENGTH 80
 
-static int decode_nist_value(char* str, int base, int end)
+static int decode_nist_value(const char* str, int base, int end)
 {
     /* can be -i -r or -snnn where nnn = ascii rep of integer = len of string (!) */
     /* we'll deal only with integer fields (and well-behaved string fields) */
@@ -6196,7 +6196,7 @@ bool mus_header_no_header(const char* filename)
     return (!ok);
 }
 
-void mus_header_set_aiff_loop_info(int* data)
+void mus_header_set_aiff_loop_info(const int* data)
 {
     /* include modes */
     if(data)

@@ -6,7 +6,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* for creating, opening and closing files for sndlib I/O */
-int sndlib_create(char*, int, int, int, unsigned, char*);
+int sndlib_create(char*, int, int, int, unsigned, const char*);
 int sndlib_open_read(char*);
 int sndlib_open_write(char*);
 int sndlib_close(int, int, int, int, int);

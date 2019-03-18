@@ -744,7 +744,7 @@ int* mus_sound_loop_info(const char* arg)
         return (NULL);
 }
 
-void mus_sound_set_loop_info(const char* arg, int* loop)
+void mus_sound_set_loop_info(const char* arg, const int* loop)
 {
     sound_file* sf;
     sf = getsf(arg);
@@ -1113,7 +1113,7 @@ off_t mus_sound_maxamps(const char* ifile, unsigned chans, mus_sample_t* vals, o
     return (frames);
 }
 
-int mus_sound_set_maxamps(const char* ifile, unsigned chans, mus_sample_t* vals, off_t* times)
+int mus_sound_set_maxamps(const char* ifile, unsigned chans, const mus_sample_t* vals, const off_t* times)
 {
     sound_file* sf;
     sf = getsf(ifile);
@@ -1230,7 +1230,7 @@ int mus_file_to_float_array(const char* filename, int chan, off_t start, unsigne
 #endif
 }
 
-int mus_float_array_to_file(const char* filename, Float* ddata, int len, int srate, unsigned channels)
+int mus_float_array_to_file(const char* filename, const Float* ddata, int len, int srate, unsigned channels)
 {
     const char* errmsg;
 #if SNDLIB_USE_FLOATS

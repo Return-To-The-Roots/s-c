@@ -370,7 +370,7 @@ int readFilter(char* filterFile, HWORD** ImpP, HWORD** ImpDP, UHWORD* LpScl, UHW
     return (0);
 }
 
-WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, HWORD Ph, HWORD Inc)
+WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, const HWORD* Xp, HWORD Ph, HWORD Inc)
 {
     HWORD *Hp, *Hdp = NULL, *End;
     HWORD a = 0;
@@ -422,7 +422,7 @@ WORD FilterUp(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, H
     return (v);
 }
 
-WORD FilterUD(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, HWORD* Xp, HWORD Ph, HWORD Inc, UHWORD dhb)
+WORD FilterUD(HWORD Imp[], HWORD ImpD[], UHWORD Nwing, BOOL Interp, const HWORD* Xp, HWORD Ph, HWORD Inc, UHWORD dhb)
 {
     HWORD a;
     HWORD *Hp, *Hdp, *End;

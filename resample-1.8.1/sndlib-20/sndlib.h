@@ -526,7 +526,7 @@ int mus_sound_forget(const char* name);
 unsigned mus_sound_prune(void);
 void mus_sound_report_cache(FILE* fp);
 int* mus_sound_loop_info(const char* arg);
-void mus_sound_set_loop_info(const char* arg, int* loop);
+void mus_sound_set_loop_info(const char* arg, const int* loop);
 
 int mus_sound_open_input(const char* arg);
 int mus_sound_open_output(const char* arg, int srate, unsigned chans, int data_format, int header_type, const char* comment);
@@ -538,13 +538,13 @@ int mus_sound_close_output(int fd, off_t bytes_of_data);
 #define mus_sound_write(Fd, Beg, End, Chans, Bufs) mus_file_write(Fd, Beg, End, Chans, Bufs)
 
 off_t mus_sound_maxamps(const char* ifile, unsigned chans, mus_sample_t* vals, off_t* times);
-int mus_sound_set_maxamps(const char* ifile, unsigned chans, mus_sample_t* vals, off_t* times);
+int mus_sound_set_maxamps(const char* ifile, unsigned chans, const mus_sample_t* vals, const off_t* times);
 bool mus_sound_maxamp_exists(const char* ifile);
 int mus_file_to_array(const char* filename, int chan, int start, unsigned samples, mus_sample_t* array);
 int mus_array_to_file(const char* filename, mus_sample_t* ddata, int len, int srate, unsigned channels);
 const char* mus_array_to_file_with_error(const char* filename, mus_sample_t* ddata, int len, int srate, unsigned channels);
 int mus_file_to_float_array(const char* filename, int chan, off_t start, unsigned samples, Float* array);
-int mus_float_array_to_file(const char* filename, Float* ddata, int len, int srate, unsigned channels);
+int mus_float_array_to_file(const char* filename, const Float* ddata, int len, int srate, unsigned channels);
 
 /* -------- audio.c -------- */
 
@@ -722,7 +722,7 @@ off_t mus_header_aux_comment_start(int n);
 off_t mus_header_aux_comment_end(int n);
 int mus_header_initialize(void);
 bool mus_header_writable(int type, int format);
-void mus_header_set_aiff_loop_info(int* data);
+void mus_header_set_aiff_loop_info(const int* data);
 int mus_header_sf2_entries(void);
 char* mus_header_sf2_name(int n);
 int mus_header_sf2_start(int n);
@@ -732,8 +732,8 @@ int mus_header_sf2_loop_end(int n);
 const char* mus_header_original_format_name(int format, int type);
 bool mus_header_no_header(const char* filename);
 
-char* mus_header_riff_aux_comment(const char* name, off_t* starts, off_t* ends);
-char* mus_header_aiff_aux_comment(const char* name, off_t* starts, off_t* ends);
+char* mus_header_riff_aux_comment(const char* name, const off_t* starts, const off_t* ends);
+char* mus_header_aiff_aux_comment(const char* name, const off_t* starts, const off_t* ends);
 
 int mus_header_change_chans(const char* filename, int type, unsigned new_chans);
 int mus_header_change_srate(const char* filename, int type, int new_srate);

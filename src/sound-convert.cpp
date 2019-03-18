@@ -37,9 +37,9 @@
 #include <boost/nowide/iostream.hpp>
 #include <boost/nowide/system.hpp>
 #include <boost/program_options.hpp>
+#include <cstdint>
 #include <cstdlib>
 #include <sstream>
-#include <stdint.h>
 #include <string>
 #include <vector>
 
