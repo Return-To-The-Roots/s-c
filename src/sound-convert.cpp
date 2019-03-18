@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         }
 
-        libsiedler2::ArchivItem_Sound_Wave* wave = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(item);
+        auto* wave = dynamic_cast<libsiedler2::ArchivItem_Sound_Wave*>(item);
         if(!wave)
         {
             bnw::cerr << "Script error on line " << linenr << ": item " << nr << " is not a wave-sound" << std::endl;
