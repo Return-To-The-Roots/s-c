@@ -50,7 +50,7 @@ namespace po = boost::program_options;
 int main(int argc, char* argv[])
 {
     std::string script, from, to;
-    boost::nowide::args(argc, argv);
+    boost::nowide::args _(argc, argv);
     po::options_description desc("Allowed options");
     desc.add_options()("help,h", "Show help")("script,s", po::value<std::string>(&script)->required(), "Script (*.scs) to use")(
       "from,f", po::value<std::string>(&from)->required(), "Source.lst to read from")("to,t", po::value<std::string>(&to)->required(),
