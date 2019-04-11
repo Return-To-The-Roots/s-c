@@ -2,10 +2,8 @@
 // Altered version
 #include "resample.h"
 
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #define IBUFFSIZE 4096 /* Input buffer size */
 #define OBUFFSIZE (IBUFFSIZE * 10 + 2)

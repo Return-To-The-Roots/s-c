@@ -75,10 +75,8 @@
 #endif
 #endif
 
-#include <math.h>
 #include <stdio.h>
 #if HAVE_FCNTL_H
-#include <fcntl.h>
 #endif
 #include <errno.h>
 #include <stdlib.h>
@@ -86,7 +84,6 @@
 #include <libc.h>
 #else
 #if(!(defined(_MSC_VER)))
-#include <unistd.h>
 #endif
 #endif
 #include <string.h>
@@ -95,7 +92,6 @@
 #include <sys/sam9407.h>
 #endif
 
-#include "sndlib-strings.h"
 #include "sndlib.h"
 
 #if(!HAVE_STRERROR)
@@ -9702,7 +9698,6 @@ int mus_audio_read(int line, char* buf, unsigned bytes)
 #if MUS_NETBSD && (!(defined(AUDIO_OK)))
 #define AUDIO_OK
 /* started from Xanim a long time ago..., bugfixes from Thomas Klausner 30-Jul-05, worked into better shape Aug-05 */
-#include <fcntl.h>
 #include <sys/audioio.h>
 #include <sys/ioctl.h>
 

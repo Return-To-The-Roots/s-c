@@ -1,5 +1,4 @@
 #include "../sndlib-20/sndlib.h"
-#include "endian.h" /* so that sndlib.h will get host byte-order right */
 
 #ifdef __cplusplus
 extern "C" {

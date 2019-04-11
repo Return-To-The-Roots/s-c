@@ -7,13 +7,11 @@
 #endif
 
 #include <errno.h>
-#include <math.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <time.h>
 
 #if HAVE_LIBC_H && !HAVE_UNISTD_H

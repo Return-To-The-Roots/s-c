@@ -25,23 +25,17 @@
 #include "libsiedler2/enumTypes.h"
 #include "libsiedler2/libsiedler2.h"
 #include "libsiedler2/prototypen.h"
-#include "libutil/LocaleHelper.h"
 #include "libutil/StringConversion.h"
 #include "libutil/System.h"
 #include "libutil/Tokenizer.h"
 #include "libutil/tmpFile.h"
-#include <boost/endian/conversion.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/nowide/args.hpp>
-#include <boost/nowide/fstream.hpp>
 #include <boost/nowide/iostream.hpp>
-#include <boost/nowide/system.hpp>
 #include <boost/program_options.hpp>
 #include <cstdint>
 #include <cstdlib>
-#include <sstream>
 #include <string>
-#include <vector>
 
 namespace bfs = boost::filesystem;
 namespace bnw = boost::nowide;
@@ -150,7 +144,7 @@ int main(int argc, char* argv[])
             } else
             {
                 bnw::cout << "Copying empty item " << nr << " at line " << linenr << "" << std::endl;
-                output.push(item);
+                output.push(nullptr);
             }
             continue;
         }

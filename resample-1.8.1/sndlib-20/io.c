@@ -20,7 +20,6 @@
 #include "snd.h"
 #endif
 
-#include <math.h>
 #include <stdio.h>
 #if HAVE_FCNTL_H
 #include <fcntl.h>
