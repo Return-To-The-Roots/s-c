@@ -27,6 +27,8 @@
 #       define LITTLE_ENDIAN 1234
 #       define BIG_ENDIAN    4321
 #       define BYTE_ORDER    LITTLE_ENDIAN
+#elif defined __HAIKU__
+#       include <endian.h>
 #else
 #       include <sys/param.h>
 #endif // !_WIN32 && !__CYGWIN__

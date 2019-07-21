@@ -4,6 +4,8 @@
 #include <sys/_endian.h>
 #elif defined __linux__
 #include <endian.h>
+#elif defined __HAIKU__
+#include <endian.h>
 #else
 #include <sys/endian.h>
 #endif
